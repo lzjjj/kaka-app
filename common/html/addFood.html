@@ -1,0 +1,398 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/addFood.css" rel="stylesheet" />
+
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<script id="food-list" type="text/html">
+
+			<div class="mask" id="mask" onclick="hidePop()">
+
+			</div>
+			<div class="head">
+				<div class="mui-input-row mui-search search">
+					<input type="search" class="mui-input-clear " id='search_box' placeholder="请输入食物名称">
+				</div>
+				<button type="button" class="mui-btn mui-btn-warning button" onclick = "searchFood()">搜索</button>
+			</div>
+			<div id="food_list">
+				{{each foodList as item}}
+				<div class="food_item" onclick="showFoodPop({{item.food_id}})">
+					<div style="display: flex;flex: 1;"><img class="food_item_img" src="{{item.food_pic}}" />
+						<div id="">
+							<p class="food_name">{{item.food_name}}</p>
+							<p><span style="color: #f8664d;">{{item.food_unit}}</span>千卡/100克</p>
+						</div>
+					</div>
+					<div class="dot"></div>
+				</div>
+				{{/each}}
+			</div>
+			<div class="bottom" id="bottom_photo">
+				<img src="../../img/photo.png" />拍照记录
+			</div>
+			<div class="pop pop_out" id="pop">
+
+				<div style="flex: 1;">
+
+					<div class="pop_head">
+						<div style="padding-left: 0.5rem;color:  #41cea9;" onclick="hidePop()">取消</div>
+						<div> <span id="now_date">3月16日</span> / <span id="dinner_type"> 午餐</span></div>
+						<div style="padding-right: 0.5rem;color:  #41cea9;" onclick="insertDinnerRecord()">确定</div>
+					</div>
+					<div class="food_item" style="margin-top: 1rem;padding: 0.5rem;border-bottom: 1px solid #F8F8F8;">
+						<div style="display: flex;flex: 1;">
+							<img class="food_item_img" src="{{foodDetail.food_pic}}" id="food_pic" style="border-radius: 0.2rem;" />
+							<div id="">
+								<p class="food_name" id="food_name">{{foodDetail.food_name}}</p>
+								<p><span id="food_unit">{{foodDetail.food_unit}}</span>千卡/100克</p>
+							</div>
+						</div>
+						<div class="dot"></div>
+					</div>
+				</div>
+				<div class="count_food">
+					<div class="count_food_head">
+						<div id="">
+							<p><span id="totalCaloli">0</span>千卡</p>
+							<p><span id="totalWeight">0</span>克</p>
+						</div>
+						<div class="count_food_head_center">
+							<span id="foodValue">0</span>.0
+							<span style="font-size: 0.8rem;top: -0.5rem;position: relative;">克</span>
+						</div>
+						<div style="text-align: center;">
+							<span class="mui-icon iconfont icon-tizhong" style="text-align: center;"></span>
+							<p>估算</p>
+						</div>
+					</div>
+					<div class="count_food_unit">
+						<p>克</p>
+						<p>份</p>
+						<p>个</p>
+						<p>盒</p>
+					</div>
+					<div class="keyboard">
+						<div class="keyboard_item">
+							1
+						</div>
+						<div class="keyboard_item">
+							2
+						</div>
+						<div class="keyboard_item">
+							3
+						</div>
+						<div class="keyboard_item">
+							4
+						</div>
+						<div class="keyboard_item">
+							5
+						</div>
+						<div class="keyboard_item">
+							6
+						</div>
+						<div class="keyboard_item">
+							7
+						</div>
+						<div class="keyboard_item">
+							8
+						</div>
+						<div class="keyboard_item">
+							9
+						</div>
+						<div class="keyboard_item">.</div>
+						<div class="keyboard_item">
+							0
+						</div>
+						<div class="mui-icon mui-icon-closeempty keyboard_item"></div>
+					</div>
+				</div>
+		</script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/template.js"></script>
+		<script src="../api.js"></script>
+
+		<script src="../../js/handlePhoto.js"></script>
+		<script src="../../js/scroll.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var firstClick = true;
+			var canRequest = true;
+			var allCount = 0 
+			var page = 1
+			var list = {
+				"foodList": [],
+				'foodDetail': ""
+			}
+			var self;
+			var total_calorie = 0.0,
+				food_weight = 0.0,
+				food_id;
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+
+				setFoodList();
+
+				//操作键盘
+				mui('body').on('tap', '.keyboard_item', function(e) {
+					var foodValue = document.getElementById("foodValue");
+					var totalCaloli = document.getElementById("totalCaloli");
+					var totalWeight = document.getElementById("totalWeight");
+					var food_unit = document.getElementById('food_unit');
+
+					var value = e.detail.target.innerText;
+					if(value != "" && value != ".") {
+						if(firstClick) {
+							foodValue.innerText = value;
+							firstClick = false;
+						} else {
+							if(foodValue.innerText + value < 999 && foodValue.innerText > 0) {
+								foodValue.innerText += value;
+							} else if(foodValue.innerText + value >= 999) {
+								foodValue.innerText = 999;
+							} else {
+								foodValue.innerText = value;
+
+							}
+
+						}
+
+					} else if(value == "") {
+						if(foodValue.innerText != "") {
+							foodValue.innerText = foodValue.innerText.substring(0, foodValue.innerText.length - 1);
+							if(foodValue.innerText == "") {
+								foodValue.innerText = 0;
+								firstClick = true;
+
+							}
+						} else {
+							foodValue.innerText = 0;
+							firstClick = true;
+
+						}
+
+					}
+					total_calorie = food_unit.innerText * foodValue.innerText / 100
+					totalCaloli.innerText = food_unit.innerText * foodValue.innerText / 100;
+					food_weight = foodValue.innerText;
+					totalWeight.innerText = foodValue.innerText;
+
+				});
+
+				//拍照触发监听
+				mui("body").on("tap", '#bottom_photo', function() {
+					if(mui.os.plus) {
+
+						var a = [{
+								title: "拍照"
+							},
+							{
+								title: "从手机相册选择"
+							}
+						]
+
+						plus.nativeUI.actionSheet({
+							title: "上传图片",
+							cancel: "取消",
+							buttons: a
+						}, function(b) { //actionsheet 点击之后出现的东西
+							switch(b.index) {
+								case 0:
+									break;
+								case 1:
+									getpic();
+									break;
+								case 2:
+									getimg();
+									break;
+								default:
+									break;
+							}
+						})
+					}
+				})
+
+			})
+			
+			//滚动触发加载
+			window.addEventListener('scroll', function() {
+				var top = 　getScrollHeight() - (getScrollTop() + getWindowHeight());
+				if(top == 0 && canRequest && list.foodList.length < allCount) {
+					page += 1
+					setFoodList();
+				} else if(top == 0 && list.foodList.length == allCount) {
+					mui.toast('已到底部')
+				}
+			})
+			
+			//查询食物
+			function searchFood() {
+				
+				if(document.getElementById('search_box').value!=""){
+				mui.ajax(requestUrls.searchFood, {
+
+					data: {
+						food_name: document.getElementById('search_box').value,
+						
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							mui.toast(data.msg);
+							list.foodList = data.data;
+
+						var html = template('food-list', list);
+
+						document.body.innerHTML = html;
+						} else {
+							mui.toast(data.msg);
+
+						}
+					}
+				});
+				}else{
+					mui.toast("请输入查询内容");
+
+					
+				}
+
+			}
+
+			//上传饮食记录
+			function insertDinnerRecord() {
+
+				mui.ajax(requestUrls.insertDinner, {
+
+					data: {
+						food_id: food_id,
+						food_weight: food_weight,
+						total_calorie: total_calorie,
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+						dinner_type: self.dinner_type == '早餐' ? '0' : (self.dinner_type == '午餐' ? '1' : '2')
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							mui.toast(data.msg);
+							hidePop();
+							document.getElementById("totalCaloli").innerText = 0;
+							document.getElementById("totalWeight").innerText = 0;
+							document.getElementById("foodValue").innerText = 0;
+							total_calorie = 0;
+							food_weight = 0;
+							var foodwebview = plus.webview.getWebviewById('food');
+							mui.fire(foodwebview,'refreshFoodPage');
+						} else {
+							mui.toast('添加失败');
+						}
+					}
+				});
+
+			}
+
+			//时间格式化：
+			//时间格式处理
+			function format(date, type) {
+
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+
+				var hour = date.getHours();
+				var minute = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
+				//var minute = date.getMinutes();
+				var second = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+				//var second = date.getSeconds();
+				var time;
+				switch(type) {
+					case 1:
+						time = month + '月' + day + '日';
+
+						break;
+
+				}
+				return time;
+			};
+
+			//展示选择食物重量弹窗
+			function showFoodPop(food_id) {
+				this.food_id = food_id //存在全局
+				getFoodDetail(food_id);
+
+			}
+
+			//获取食物详情信息
+			function getFoodDetail(food_id) {
+				mui.ajax(requestUrls.getFoodDetail, {
+					data: {
+						food_id: food_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						var item = data.data;
+						var now_date = document.getElementById('now_date');
+						var dinner_type = document.getElementById('dinner_type');
+						var food_name = document.getElementById('food_name');
+						var food_pic = document.getElementById('food_pic');
+						var food_unit = document.getElementById('food_unit');
+						food_name.innerText = item.food_name;
+						food_pic.src = item.food_pic;
+						now_date.innerText = format(new Date(), 1);
+						food_unit.innerText = item.food_unit;
+						dinner_type.innerText = self.dinner_type;
+						var pop = document.getElementById("pop");
+						var mask = document.getElementById("mask");
+
+						mask.style.display = "block";
+						pop.classList.add("pop_in");
+					}
+				});
+			}
+
+			//隐藏先选择食物弹窗
+			function hidePop() {
+
+				var pop = document.getElementById("pop");
+				var mask = document.getElementById("mask");
+
+				pop.classList.remove("pop_in");
+				mask.style.display = "none";
+			}
+
+			//渲染食物列表
+			function setFoodList() {
+				mui.ajax(requestUrls.getFoodList, {
+					data: {
+						page: page
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						allCount =data.allCount 
+						list.foodList = list.foodList.concat(data.data);
+						list.foodDetail = data.data[0]
+						var html = template('food-list', list);
+
+						document.body.innerHTML = html;
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

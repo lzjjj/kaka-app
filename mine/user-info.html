@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.li-style {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+		</style>
+	</head>
+
+	<body id="userInfo">
+<script id="user-info" type="text/html">
+	
+		<ul class="mui-table-view" style="margin-top: 1rem;">
+			<li class="mui-table-view-cell li-style" id="userHead">
+				<div>头像</div>
+				<img id="headImg" src="{{user_pic}}" style="width: 2.5rem;height:2.5rem;border-radius: 50%;vertical-align: middle;" />
+
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>用户名/昵称</div>
+				<div id="">
+					{{user_name}}
+				</div>
+			</li>
+			
+			<li class="mui-table-view-cell li-style">
+				<div>手机号码</div>
+				<div id="">
+					{{user_phone}}
+					
+				</div>
+			</li>
+		</ul>
+		<ul class="mui-table-view" style="margin-top: 1rem;">
+			<li class="mui-table-view-cell li-style">
+				<div>性别</div>
+				<div id="">
+					{{if user_sex==0||!user_sex}}
+						保密
+					{{/if }}
+					{{if user_sex==1}}
+						男
+					{{/if }}
+					{{if user_sex==2}}
+					  	女
+					{{/if }}
+					
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>出生日期</div>
+				<div id="">
+					{{if user_birth_date}}
+					{{user_birth_date}}
+					{{/if }}
+					{{if !user_birth_date}}
+					保密
+					{{/if }}
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>身高</div>
+				<div id="">
+					{{if user_height}}
+					{{user_height}}cm
+					{{/if }}
+					{{if !user_height}}
+					0cm
+					{{/if }}
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>初始体重</div>
+				<div id="">
+					{{if user_weight}}
+					{{user_weight}}kg
+					{{/if }}
+					{{if !user_weight}}
+					0kg
+					{{/if }}
+					
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>我的目标</div>
+				<div id="">
+					{{if user_target&&user_target==0}}
+					塑性/保持身材
+					{{/if }}
+					{{if user_target&&user_target==1}}
+					减肥
+					{{/if }}
+					{{if !user_target}}
+					保密
+					{{/if }}
+				
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>目标体重</div>
+				<div id="">
+					{{if user_finalweight}}
+					{{user_finalweight}}kg
+					{{/if }}
+					{{if !user_finalweight}}
+					保密
+					{{/if }}
+
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>目标达成时间</div>
+				<div id="">
+					{{if user_final_time}}
+					{{user_final_time}}
+					{{/if }}
+					{{if !user_final_time}}
+					保密
+					{{/if }}
+
+				</div>
+			</li>
+			<li class="mui-table-view-cell li-style">
+				<div>自定义预算热量</div>
+				<div id="">
+				{{if user_calorie}}
+					{{user_calorie}}千卡
+					{{/if }}
+					{{if !user_calorie}}
+					0千卡
+					{{/if }}
+
+				</div>
+			</li>
+		</ul>
+		
+		</script>  
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/handlePhoto.js"></script>
+		<script src="../js/template.js"></script>
+		
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var data =JSON.parse(localStorage.getItem('user')) ;
+
+				var html = template('user-info',data);
+				document.body.innerHTML = html;
+			//拍照触发监听
+			document.getElementById("userHead").addEventListener("tap", function() {
+				if(mui.os.plus) {
+
+					var a = [{
+							title: "拍照"
+						},
+						{
+							title: "从手机相册选择"
+						}
+					]
+
+					plus.nativeUI.actionSheet({
+						title: "上传头像",
+						cancel: "取消",
+						buttons: a
+					}, function(b) { //actionsheet 点击之后出现的东西
+						switch(b.index) {
+							case 0:
+								break; 
+							case 1:
+								getpic();
+								break;
+							case 2:
+								getimg();
+								break;
+							default:
+								break;
+						}
+					})
+				}
+			})
+			})
+			
+
+			
+		</script>
+
+	</body>
+
+</html>

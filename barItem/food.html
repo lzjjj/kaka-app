@@ -1,0 +1,486 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/own.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/food.css" />
+
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body class="own-gray-color">
+
+		<script id="dinner-info" type="text/html">
+			<div class="mask" id="mask" onclick="hidePop()">
+
+			</div>
+			<div style="margin-bottom:15%;">
+
+				<div class="head">
+					<div class="head_up">
+						<p>摄入</p>
+						<p>{{total_calorie?total_calorie.toFixed(1):0}}</p>
+					</div>
+					<div id="">
+						<div class="head_center">
+							{{if user_calorie-total_calorie>=0}}
+							<p>还可以吃</p>
+							<p class="has_eat">{{(user_calorie-total_calorie).toFixed(1)}}</p>
+							{{/if}} {{if user_calorie-total_calorie
+							<0}} <p>您多吃了</p>
+								<p class="has_eat">{{(total_calorie-user_calorie).toFixed(1)}}</p>
+								{{/if}}
+						</div>
+						<p class="head_center_down">单位：千卡</p>
+					</div>
+					<div class="head_up">
+						<p>預算</p>
+						<p>{{user_calorie?user_calorie.toFixed(1):0.0}}</p>
+					</div>
+				</div>
+				{{if breakfirst_list.length==0&&luanch_list.length==0&&dinner_list.length==0}}
+				<div style="text-align: center;margin-top: 2.5rem;">
+					<img src="../img/empity.png" style="width:153px;height: 100px;" />
+					<p>还没有食物记录</p>
+					<p>请添加屏幕下方的按钮来添加</p>
+				</div>
+				{{/if}} {{if breakfirst_list.length!=0}}
+				<div class="breakfast">
+					<div class="meal">
+						<div class="">
+							<p class="meal_name">早餐</p>
+							<p>建议：497~608</p>
+						</div>
+						<p>{{breakfirst_total_calorie.toFixed(1)}}千卡</p>
+					</div>
+					{{each breakfirst_list as item}}
+					<div class="food_item" onclick="getFoodDetail({{item.dinner_id}},'早餐')">
+						<div style="display: flex;flex: 1;align-items: center;">
+							<img class="food_item_img" src="{{item.food_pic}}" />
+
+							<div id="">
+								<p class="food_name">{{item.food_name}}</p>
+								<p>{{item.food_weight}}克</p>
+							</div>
+						</div>
+						<p>{{item.total_calorie}}千卡</p>
+					</div>
+					{{/each}}
+				</div>
+				{{/if}} {{if luanch_list.length!=0}}
+				<div class="breakfast">
+					<div class="meal">
+						<div class="">
+							<p class="meal_name">午餐</p>
+							<p>建议：497~608</p>
+						</div>
+						<p>{{luanch_total_calorie.toFixed(1)}}千卡</p>
+					</div>
+					{{each luanch_list as item}}
+					<div class="food_item" onclick="getFoodDetail({{item.dinner_id}},'午餐')">
+						<div style="display: flex;flex: 1;align-items: center;">
+							<img class="food_item_img" src="{{item.food_pic}}" />
+
+							<div id="">
+								<p class="food_name">{{item.food_name}}</p>
+								<p>{{item.food_weight}}克</p>
+							</div>
+						</div>
+						<p>{{item.total_calorie}}千卡</p>
+					</div>
+					{{/each}}
+				</div>
+				{{/if}} {{if dinner_list.length!=0}}
+				<div class="breakfast">
+					<div class="meal">
+						<div class="">
+							<p class="meal_name">晚餐</p>
+							<p>建议：497~608</p>
+						</div>
+						<p>{{dinner_total_calorie.toFixed(1)}}千卡</p>
+					</div>
+					{{each dinner_list as item}}
+					<div class="food_item" onclick="getFoodDetail({{item.dinner_id}},'晚餐')">
+						<div style="display: flex;flex: 1;align-items: center;">
+							<img class="food_item_img" src="{{item.food_pic}}" />
+
+							<div id="">
+								<p class="food_name">{{item.food_name}}</p>
+								<p>{{item.food_weight}}克</p>
+							</div>
+						</div>
+						<p>{{item.total_calorie}}千卡</p>
+					</div>
+					{{/each}}
+				</div>
+				{{/if}}
+				<nav class="mui-bar mui-bar-tab">
+					<div class="mui-tab-item mui-active" id="breakfast">
+						<span class="mui-icon iconfont icon-hanzaocan"></span>
+						<span class="mui-tab-label">+早餐</span>
+					</div>
+					<div class="mui-tab-item" id="luanch">
+						<span class="mui-icon iconfont icon-wucan"></span>
+						<span class="mui-tab-label">+午餐</span>
+					</div>
+
+					<div class="mui-tab-item" id="dinner">
+						<span class="mui-icon iconfont icon-wancan"></span>
+						<span class="mui-tab-label">+晚餐</span>
+					</div>
+
+				</nav>
+				<div class="pop pop_out" id="pop">
+
+					<div style="flex: 1;">
+
+						<div class="pop_head">
+							<div style="padding-left: 0.5rem;color:  #41cea9;" onclick="hidePop()">取消</div>
+							<div> <span id="now_date">3月16日</span> / <span id="dinner_type"> 午餐</span></div>
+							<div style="padding-right: 0.5rem;color:  #41cea9;" onclick="updateDinnerRecord()">确定</div>
+						</div>
+						<div class="food_item" style="margin-top: 1rem;padding: 0.5rem;border-bottom: 1px solid #F8F8F8;">
+							<div style="display: flex;flex: 1;">
+								<img class="food_item_img" src="../img/1.jpg" id="food_pic" style="border-radius: 0.2rem;" />
+								<div id="">
+									<p class="food_name" id="food_name">面包</p>
+									<p><span id="food_unit">116</span>千卡/100克</p>
+								</div>
+							</div>
+							<div class="dot"></div>
+						</div>
+					</div>
+					<div class="count_food">
+						<div class="count_food_head">
+							<div id="">
+								<p><span id="totalCaloli">0</span>千卡</p>
+								<p><span id="totalWeight">0</span>克</p>
+							</div>
+							<div class="count_food_head_center">
+								<span id="foodValue">0</span>.0
+								<span style="font-size: 0.8rem;top: -0.5rem;position: relative;">克</span>
+							</div>
+							<div style="text-align: center;">
+								<span class="mui-icon iconfont icon-tizhong" style="text-align: center;"></span>
+								<p>估算</p>
+							</div>
+						</div>
+						<div class="count_food_unit">
+							<p>克</p>
+							<p>份</p>
+							<p>个</p>
+							<p>盒</p>
+						</div>
+						<div class="keyboard">
+							<div class="keyboard_item">
+								1
+							</div>
+							<div class="keyboard_item">
+								2
+							</div>
+							<div class="keyboard_item">
+								3
+							</div>
+							<div class="keyboard_item">
+								4
+							</div>
+							<div class="keyboard_item">
+								5
+							</div>
+							<div class="keyboard_item">
+								6
+							</div>
+							<div class="keyboard_item">
+								7
+							</div>
+							<div class="keyboard_item">
+								8
+							</div>
+							<div class="keyboard_item">
+								9
+							</div>
+							<div class="keyboard_item">.</div>
+							<div class="keyboard_item">
+								0
+							</div>
+							<div class="mui-icon mui-icon-closeempty keyboard_item"></div>
+						</div>
+					</div>
+		</script>
+
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/template.js"></script>
+		<script type="text/javascript" src="../js/own.js"></script>
+
+		<script src="../common/api.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			var firstClick = true;
+			var dinner_id;
+			mui.plusReady(function() {
+				if(JSON.parse(localStorage.getItem('user'))) {
+
+					getdinnerData(JSON.parse(localStorage.getItem('user')).user_id);
+
+				}
+
+				//操作键盘
+				mui('body').on('tap', '.keyboard_item', function(e) {
+					var foodValue = document.getElementById("foodValue");
+					var totalCaloli = document.getElementById("totalCaloli");
+					var totalWeight = document.getElementById("totalWeight");
+					var food_unit = document.getElementById('food_unit');
+
+					var value = e.detail.target.innerText;
+					if(value != "" && value != ".") {
+						if(firstClick) {
+							foodValue.innerText = value;
+							firstClick = false;
+						} else {
+							if(foodValue.innerText + value < 999 && foodValue.innerText > 0) {
+								foodValue.innerText += value;
+							} else if(foodValue.innerText + value >= 999) {
+								foodValue.innerText = 999;
+							} else {
+								foodValue.innerText = value;
+
+							}
+
+						}
+
+					} else if(value == "") {
+						if(foodValue.innerText != "") {
+							foodValue.innerText = foodValue.innerText.substring(0, foodValue.innerText.length - 1);
+							if(foodValue.innerText == "") {
+								foodValue.innerText = 0;
+								firstClick = true;
+
+							}
+						} else {
+							foodValue.innerText = 0;
+							firstClick = true;
+
+						}
+
+					}
+					total_calorie = food_unit.innerText * foodValue.innerText / 100
+					totalCaloli.innerText = food_unit.innerText * foodValue.innerText / 100;
+					food_weight = foodValue.innerText;
+					totalWeight.innerText = foodValue.innerText;
+
+				});
+
+			});
+
+			mui('body').on('tap', '#breakfast', function(e) {
+				//打开添加餐次页面
+				mui.openWindow({
+					url: '../common/html/addFood.html',
+					id: 'addFood',
+					extras: {
+						dinner_type: '早餐'
+					},
+					styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
+						titleNView: { // 窗口的标题栏控件
+							titleText: "添加早餐", // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+							titleColor: "#FFFFFF", // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
+							titleSize: "17px", // 字体大小,默认17px
+							backgroundColor: "#41cea9", // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"
+							progress: { // 标题栏控件的进度条样式
+								color: "#41cea9", // 进度条颜色,默认值为"#00FF00"  
+								height: "2px" // 进度条高度,默认值为"2px"         
+							},
+							splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								color: "#41cea9", // 分割线颜色,默认值为"#CCCCCC"  
+								height: "1px" // 分割线高度,默认值为"2px"
+							}
+						}
+					}
+				});
+			});
+			mui('body').on('tap', '#luanch', function(e) {
+				//打开添加餐次页面
+				mui.openWindow({
+					url: '../common/html/addFood.html',
+					id: 'addFood',
+					extras: {
+						dinner_type: '午餐'
+					},
+					styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
+						titleNView: { // 窗口的标题栏控件
+							titleText: "添加午餐", // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+							titleColor: "#FFFFFF", // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
+							titleSize: "17px", // 字体大小,默认17px
+							backgroundColor: "#41cea9", // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"
+							progress: { // 标题栏控件的进度条样式
+								color: "#41cea9", // 进度条颜色,默认值为"#00FF00"  
+								height: "2px" // 进度条高度,默认值为"2px"         
+							},
+							splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								color: "#41cea9", // 分割线颜色,默认值为"#CCCCCC"  
+								height: "1px" // 分割线高度,默认值为"2px"
+							}
+						}
+					}
+				});
+			});
+			mui('body').on('tap', '#dinner', function(e) {
+				//打开添加餐次页面
+				mui.openWindow({
+					url: '../common/html/addFood.html',
+					id: 'addFood',
+					extras: {
+						dinner_type: '晚餐'
+					},
+					styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
+						titleNView: { // 窗口的标题栏控件
+							titleText: "添加晚餐", // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+							titleColor: "#FFFFFF", // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
+							titleSize: "17px", // 字体大小,默认17px
+							backgroundColor: "#41cea9", // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"
+							progress: { // 标题栏控件的进度条样式
+								color: "#41cea9", // 进度条颜色,默认值为"#00FF00"  
+								height: "2px" // 进度条高度,默认值为"2px"         
+							},
+							splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								color: "#41cea9", // 分割线颜色,默认值为"#CCCCCC"  
+								height: "1px" // 分割线高度,默认值为"2px"
+							}
+						}
+					}
+				});
+			});
+
+			//获取饮食记录
+			function getdinnerData(user_id) {
+				mui.ajax(requestUrls.getDinnerInfo, {
+					data: {
+						user_id: user_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						var html = template('dinner-info', data.data);
+
+						document.body.innerHTML = html;
+					}
+				});
+			}
+
+			//修改饮食记录
+			function updateDinnerRecord() {
+
+				mui.ajax(requestUrls.updateDinnerInfo, {
+
+					data: {
+						dinner_id: dinner_id,
+						food_weight: document.getElementById("totalWeight").innerText,
+						total_calorie: document.getElementById("totalCaloli").innerText,
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							mui.toast(data.msg);
+							hidePop();
+							
+							getdinnerData(JSON.parse(localStorage.getItem('user')).user_id);
+
+						} else {
+							mui.toast(data.msg);
+						}
+					}
+				});
+
+			}
+
+			//时间格式化：
+			//时间格式处理
+			function format(date, type) {
+
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+
+				var hour = date.getHours();
+				var minute = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
+				//var minute = date.getMinutes();
+				var second = (date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds();
+				//var second = date.getSeconds();
+				var time;
+				switch(type) {
+					case 1:
+						time = month + '月' + day + '日';
+
+						break;
+
+				}
+				return time;
+			};
+
+			//获取食物详情信息以及展示弹窗
+			function getFoodDetail(dinner_id, dinner_type1) {
+				this.dinner_id = dinner_id;
+				mui.ajax(requestUrls.getDinnerDetail, {
+					data: {
+						dinner_id: dinner_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							var item = data.data;
+							var now_date = document.getElementById('now_date');
+							var dinner_type = document.getElementById('dinner_type');
+							var food_name = document.getElementById('food_name');
+							var food_pic = document.getElementById('food_pic');
+							var food_unit = document.getElementById('food_unit');
+							document.getElementById("totalCaloli").innerText = item.total_calorie;
+							document.getElementById("totalWeight").innerText = item.food_weight;
+							document.getElementById("foodValue").innerText = item.food_weight
+							food_name.innerText = item.food_name;
+							food_pic.src = item.food_pic;
+							now_date.innerText = format(new Date(), 1);
+							food_unit.innerText = item.food_unit;
+							dinner_type.innerText = dinner_type1;
+							var pop = document.getElementById("pop");
+							var mask = document.getElementById("mask");
+
+							mask.style.display = "block";
+							pop.classList.add("pop_in");
+						} else {
+							mui.toast(data.msg);
+						}
+					}
+				});
+			}
+
+			//隐藏先选择食物弹窗
+			function hidePop() {
+
+				var pop = document.getElementById("pop");
+				var mask = document.getElementById("mask");
+
+				pop.classList.remove("pop_in");
+				mask.style.display = "none";
+			}
+
+			//监听数据刷新
+			window.addEventListener("refreshFoodPage", function() {
+				getdinnerData(JSON.parse(localStorage.getItem('user')).user_id);
+			})
+		</script>
+	</body>
+
+</html>

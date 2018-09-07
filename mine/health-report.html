@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/healthReport.css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+		<script id="health-report" type="text/html">
+			<div class="head">
+
+				<div id="">
+					<div class="head_center">
+
+						<p class="has_eat">{{healthPoint}}<span id="" style="position: relative;top: -1.3rem;font-size: 1rem;font-weight: normal;">
+						分
+					</span> </p>
+
+						<p class="head_center_down">
+							我的健康指数
+						</p>
+
+					</div>
+
+				</div>
+
+			</div>
+			<div style="background-color: #FFFFFF;">
+
+				<div class="level_title">
+					<div style="border-bottom: 1px solid #FFA500;width:-webkit-fit-content;margin: 0 auto;">
+						我的健康评级
+					</div>
+				</div>
+				<div class="level_box">
+
+					<div class='level_box_item' style="background-color: rgb(161,222,171)" id='S'>
+						S
+					</div>
+
+					<div class="level_box_item " style="background-color: rgb(138,197,61)" id='A'>
+						A
+					</div>
+					<div class="level_box_item " style="background-color: rgb(221,229,142)" id='B'>
+						B
+					</div>
+					<div class="level_box_item" style="background-color: rgb(225,210,128)" id='C'>
+						C
+					</div>
+					<div class="level_box_item" style="background-color: rgb(252,179,168)" id='F'>
+						F
+					</div>
+
+				</div>
+				<div class="level_detail">
+					S级：96~100分；A级：86~95分；B级：76~85分；C级：61~75分；F级：0~60分。
+				</div>
+			</div>
+			<div style="background-color: #FFFFFF;text-align: center;">
+				<div class="level_title">
+					<div style="border-bottom: 1px solid #FFA500;width:-webkit-fit-content;margin: 0.5rem auto;">
+						我的身材怎么样？
+					</div>
+				</div>
+				<div id="">
+
+					<div class="health_head">
+						<div style="display: flex;padding-left: 1rem;">
+							<div class="health_head_bar">
+
+							</div>
+							<p style="color: #000000;">BMI</p>
+						</div>
+
+						<p class="health_head_center">{{BMI.toFixed(1)}} <span class="health_detail">{{healthPoint>85?'(健康)':'(不健康)'}}</span> </p>
+						<p class="mui-icon mui-icon-help" style="padding-right: 0.5rem;color: #F0AD4E;"></p>
+
+					</div>
+					<div class="point_pop">{{BMI.toFixed(1)}}</div>
+					<div id="BMI" class="mui-progressbar" style="width: 70%;border-radius:0.2rem ;margin: 0 auto;height: 0.4rem;position: relative;background-color: #8ED1FA;">
+						<span style="background-color:#21A5F5 ;"></span>
+
+					</div>
+
+				</div>
+				<div id="">
+
+					<div class="health_head">
+						<div style="display: flex;padding-left: 1rem;">
+							<div class="health_head_bar" style="background-color: #F0AD4E;">
+
+							</div>
+							<p style="color: #000000;">体脂率</p>
+						</div>
+
+						<p class="health_head_center">{{BFR.toFixed(1)}}% <span class="health_detail">{{BMI.toFixed(1)>=18.5&&BMI.toFixed(1)<=24.9?'(标准)':(BMI.toFixed(1)<18.5?'(瘦)':'(肥胖)')}}</span> </p>
+						<p class="mui-icon mui-icon-help" style="padding-right: 0.5rem;color: #F0AD4E;"></p>
+
+					</div>
+					<div class="point_pop" style="background-color: #F0AD4E;">{{BFR.toFixed(1)}}</div>
+					<div id="tizhilv" class="mui-progressbar" style="width: 70%;border-radius:0.2rem ;margin: 0 auto;height: 0.4rem;position: relative;background-color: antiquewhite;">
+						<span style="background-color:#F0AD4E ;"></span>
+					</div>
+				</div>
+				<div id="">
+					<p style="font-size: 0.5rem;color: gray;">体重健康范围</p>
+					<p style="color: #000000;margin-top: -0.5rem;">{{perfect_height-2}}~{{perfect_height+2}}公斤</p>
+				</div>
+
+			</div>
+
+			<div style="background-color: #FFFFFF;text-align: center;padding-bottom: 1rem;">
+				<div class="level_title">
+					<div style="border-bottom: 1px solid #FFA500;width:-webkit-fit-content;margin: 0.5rem auto;">
+						我显年轻么？
+					</div>
+				</div>
+				<div id="">
+
+					<div class="health_head">
+						<div style="display: flex;padding-left: 1rem;">
+							<div class="health_head_bar" style="background-color: #6641E2;">
+
+							</div>
+							<p style="color: #000000;">身体年龄</p>
+						</div>
+
+						<p class="health_head_center">{{bodyAge}}<span class="health_detail">岁</span> </p>
+						<p class="mui-icon mui-icon-help" style="padding-right: 0.5rem;color: #F0AD4E;"></p>
+
+					</div>
+					<div class="point_pop" style="background-color: #6641E2;">{{bodyAge}}</div>
+					<div id="bodyAge" class="mui-progressbar" style="width: 70%;border-radius:0.2rem ;margin: 0 auto;height: 0.4rem;position: relative;background-color:#8A6Dd1;">
+						<span style="background-color:#6641E2 ;"></span>
+
+					</div>
+
+				</div>
+
+				<div style="width: 80%;height: 3rem;margin: 1rem auto;box-shadow: 1px 1px 1px 1px #888888;display: flex;align-items: center;line-height: 3rem;">
+					<div class="mui-icon mui-icon-info" style="color: #6641E2;padding:0 0.5rem 0 0.3rem;">
+
+					</div>
+					{{if age>bodyAge}}
+					<p style="padding: 0;margin: 0;">恭喜你，比实际年龄年轻了 <span style="color: #6641E2;">{{age-bodyAge}}岁</span> </p>
+					{{/if}}
+					{{if age<bodyAge}}
+					<p style="padding: 0;margin: 0;">很遗憾，比实际年龄老了 <span style="color: #6641E2;">{{bodyAge-age}}岁</span> </p>
+					{{/if}}
+					{{if age==bodyAge}}
+					<p style="padding: 0;margin: 0;">您的实际年龄和身体年龄完全吻合</p>
+					{{/if}}
+				</div>
+
+			</div>
+			<div style="background-color: #FFFFFF;text-align: center;padding-bottom: 1rem;">
+				<div class="level_title">
+					<div style="border-bottom: 1px solid #FFA500;width:-webkit-fit-content;margin: 0.5rem auto;">
+						我该怎么吃？
+					</div>
+				</div>
+				<div id="">
+
+					<div class="health_head">
+						<div style="display: flex;padding-left: 1rem;">
+							<div class="health_head_bar" style="background-color:#4CD964;">
+
+							</div>
+							<p style="color: #000000;">预算热量</p>
+						</div>
+
+						<p class="health_head_center">{{user_calorie}} <span class="health_detail">千卡</span> </p>
+						<p class="mui-icon mui-icon-help" style="padding-right: 0.5rem;color: #F0AD4E;"></p>
+
+					</div>
+
+				</div>
+
+				<div style="width: 80%;height: 3rem;margin:1rem auto;box-shadow: 1px 1px 1px 1px #888888;display: flex;justify-content: center;align-items: center;text-align: left;">
+					<div class="mui-icon mui-icon-info" style="color: #4CD964;padding-left: 0.3rem;">
+
+					</div>
+					<p style="padding: 0 1rem;margin: 0;">预算热量是根据你的身体状况，你的目标，每天应摄入的热量</p>
+				</div>
+				<p style="margin: 0 auto;text-align: left;padding:0.5rem 0.5rem 0.5rem 2rem;color: #000000;">不用过于精确，在{{user_calorie-200}}~{{user_calorie+200}}千卡之间的范围都是合理的。</p>
+
+			</div>
+			<p style="width: 90%;margin: 0 auto;padding: 0.5rem 0;">以上数据是根据你的身体数据和设定目标来计算，如果有有较大的变动，请重新测评</p>
+			<div style="" class="bottom_button" onclick="perfectInfo()">
+				重新测评
+			</div>
+		</script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../common/api.js"></script>
+		<script src="../js/own.js" charset="UTF-8"></script>
+		<script src="../js/template.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				beforeback: function() {
+					//获得列表界面的webview
+					var list = plus.webview.getWebviewById('list');
+					//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+					mui.fire(list, 'refresh');
+					plus.navigator.setStatusBarBackground("#41cea9");
+					//返回true，继续页面关闭逻辑
+					return true;
+				}
+			})
+			mui.plusReady(function() {
+				plus.navigator.setStatusBarBackground("#FFA500");
+				getReportInfo()
+			})
+
+			function perfectInfo() {
+				ws = plus.webview.currentWebview();
+				ws.close()
+				plus.navigator.setStatusBarBackground("#41cea9");
+				pushWebView({
+					webType: 'newWebview_First',
+					id: 'common/html/perfect-info-1.html',
+					href: 'common/html/perfect-info-1.html',
+					aniShow: getaniShow(),
+					title: "完善资料1/4",
+					isBars: false,
+					barsIcon: '',
+					extendOptions: {}
+				})
+
+			}
+
+			function getReportInfo() {
+				mui.ajax(requestUrls.userReport, {
+					data: {
+						user_id: JSON.parse(localStorage.getItem('user')).user_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							
+							var html = template('health-report', data.data);
+							document.body.innerHTML = html;
+							mui("#BMI").progressbar({
+								progress: data.data.BMI.toFixed(1)
+							}).show();
+							mui("#tizhilv").progressbar({
+								progress: data.data.BFR.toFixed(1)
+							}).show();
+							mui("#bodyAge").progressbar({
+								progress: data.data.bodyAge
+							}).show();
+							document.getElementById(data.data.level).classList.add('level_box_item_active');
+						} else {
+							mui.toast(data.msg);
+
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

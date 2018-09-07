@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/own.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/weightProgress.css" />
+
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<script id="weight-progress" type="text/html">
+
+			<div class="mask pop_out" id="mask">
+				<div class="weight_record">
+					<div style="flex: 1;width:100%;">
+
+						<div style="padding-top: 1rem;">今天</div>
+						<div style="margin-top: 1rem;color: #41cea9 ;font-size: 1.5rem;">
+							<span id="weight">100</span> <span style="font-size: 0.7rem;top: -0.7rem;position: relative;">kg</span>
+						</div>
+						<div class="mui-input-row mui-input-range" style="display: flex;justify-content: center;width:100%;margin-bottom: 3rem;margin-top: 0.5rem;">
+
+							<input id="weightInput" type="range" min="0" max="200" style="width: 100%;margin-left: 1rem;">
+						</div>
+					</div>
+					<div id="" class="bottons">
+
+						<div onclick="hidePop()">
+							取消
+						</div>
+						<div onclick="insertWeight()">
+							保存
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="margin-bottom:15%;">
+				<div class="weight_head">
+					<div id="">
+						{{if firest_weight.weight_num-fianl_weight.weight_num>0}}
+						<div class="weight_head_center">
+							<p style="color:#8ed1fa ;">比原来轻了</p>
+							<p class="weight_change">{{(firest_weight.weight_num-fianl_weight.weight_num).toFixed(1)}}</p>
+							<p style="color:#8ed1fa ;">保持/塑形</p>
+
+						</div>
+						{{/if}} {{if firest_weight.weight_num-fianl_weight.weight_num
+						<=0}} <div class="weight_head_center">
+							<p style="color:#8ed1fa ;">比原来重了</p>
+							<p class="weight_change">{{(fianl_weight.weight_num-firest_weight.weight_num).toFixed(1)}}</p>
+							<p style="color:#8ed1fa ;">保持/塑形</p>
+
+					</div>
+					{{/if}}
+					<p class="weight_head_center_down">单位：公斤</p>
+				</div>
+
+			</div>
+			<div style="background-color: #FFFFFF;padding-top: 2rem;">
+
+				<button type="button" class="mui-btn mui-btn-primary weight_button" onclick="showPop()">记录体重</button>
+				<div class="weight_detail">
+					<div class="detail_item">
+						<div class="etail_item_left">
+							<p class="detail_item_left_up">初始体重</p>
+							<p class="detail_item_left_down">{{(firest_weight.weight_num).toFixed(1)}} <span class="detail_item_left_down_extra">公斤</span></p>
+						</div>
+						<div>
+							<p class="detail_item_right">开始{{firest_weight.user_target==0?'保持/塑形':'减肥'}}</p>
+							<p class="detail_item_right">{{firest_weight.weight_date}}</p>
+						</div>
+					</div>
+					<div class="detail_item">
+						<div class="etail_item_left">
+							<p class="detail_item_left_up">今日体重</p>
+							<p class="detail_item_left_down">{{(fianl_weight.weight_num).toFixed(1)}} <span class="detail_item_left_down_extra">公斤</span></p>
+						</div>
+						<div>
+							<p class="detail_item_right">{{fianl_weight.user_target==0?'保持/塑形':'减肥'}}第{{fianl_weight.daySpace}}天</p>
+							<p class="detail_item_right">{{fianl_weight.weight_date}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+			<button type="button" class="mui-btn mui-btn-primary set_target_button" onclick="perfectInfo()">设定新目标</button>
+		</script>
+		<script src="../../js/template.js"></script>
+		<script src="../api.js"></script>
+		<script src="../../js/own.js" charset="UTF-8"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+
+				getWeightData();
+
+			})
+
+			function perfectInfo() {
+				pushWebView({
+					webType: 'newWebview_First',
+					id: 'common/html/perfect-info-1.html',
+					href: 'common/html/perfect-info-1.html',
+					aniShow: getaniShow(),
+					title: "完善资料1/4",
+					isBars: false,
+					barsIcon: '',
+					extendOptions: {}
+				})
+			}
+
+			function addEvent(el, type, handle) {
+				try { // Chrome、FireFox、Opera、Safari、IE9.0及其以上版本
+					el.addEventListener(type, handle, false);
+				} catch(e) {
+					try { // IE8.0及其以下版本
+						el.attachEvent('on' + type, handle);
+					} catch(e) { // 早期浏览器
+						el['on' + type] = handle;
+					}
+				}
+			}
+
+			//插入体重记录
+			function insertWeight() {
+				mui.ajax(requestUrls.insertWeight, {
+
+					data: {
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+						weight_num: document.getElementById("weightInput").value,
+
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							getWeightData();
+							var chartwebview = plus.webview.getWebviewById('../common/html/weightLineChart.html');
+							mui.fire(chartwebview, 'refreshchartPage');
+						} else {
+							mui.toast(data.msg);
+
+						}
+					}
+				});
+			}
+
+			//获取体重数据
+			function getWeightData() {
+				mui.ajax(requestUrls.weightDetail, {
+
+					data: {
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							var html = template('weight-progress', data.data);
+
+							document.body.innerHTML = html;
+							var weightInput = document.getElementById("weightInput");
+							var weight = document.getElementById("weight");
+							setTimeout(function() {
+								var first = data.data.firest_weight.weight_num;
+								var last = data.data.fianl_weight.weight_num;
+								var value = Math.abs(first - last);
+								if(first >= last) {
+									mui.toast('比原来轻了' + value + '公斤');
+								} else {
+									mui.toast('比原来重了' + value + '公斤');
+								}
+
+							}, 800)
+							var hl = "input";
+							if(navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.match(/8./i) == "8.") { //IE 8.0
+								hl = "propertychange";
+							}
+							addEvent(weightInput, hl, function(e) {
+								weight.innerText = e.target.value;
+							})
+
+						} else {
+							mui.toast(data.msg);
+
+						}
+					}
+				});
+			}
+
+			//隐藏弹窗
+			function hidePop() {
+				//					document.body.style.position = "";
+
+				var mask = document.getElementById("mask");
+
+				mask.classList.remove("pop_in");
+				mask.classList.add("pop_out");
+
+			}
+
+			//弹出体重计
+			function showPop() {
+				//					document.body.style.position = "fixed";
+
+				var mask = document.getElementById("mask");
+				mask.classList.remove("pop_out");
+				mask.classList.add("pop_in");
+				//					mask.style.display = "none";
+			}
+		</script>
+	</body>
+
+</html>

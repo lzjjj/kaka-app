@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/own.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<!--<link rel="stylesheet" type="text/css" href="../css/food.css" />-->
+		<style type="text/css">
+			.mui-active .mui-icon,
+			.mui-active .mui-tab-label {
+				color: #21a5f5;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav own-main-background-color " style="background-color: #21a5f5;">
+
+			<h1 id="nav-title" class="mui-title">体重记录</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active"  href="../common/html/weightProgress.html">
+				<span class="mui-icon iconfont icon-icon-p_mrpjinduzhuizong"></span>
+				<span class="mui-tab-label">进度</span>
+			</a>
+			<a class="mui-tab-item" href="../common/html/weightLineChart.html">
+				<span class="mui-icon iconfont icon-jiagequxian"></span>
+				<span class="mui-tab-label">曲线</span>
+			</a>
+
+		</nav>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				//获取当前title和当前webview
+				navTitle = document.querySelector('.mui-title');
+				mainWebview = plus.webview.currentWebview();
+
+				plus.navigator.setStatusBarBackground("#41cea9");
+
+				//设置只支持竖屏幕显示
+				plus.screen.lockOrientation("portrait-primary");
+				//初始化与index有关的页面
+				initIndexView();
+
+				
+			});
+			var navTitle;
+			var mainWebview;
+			var curBarItemWebview;
+			var barItemWebviewArray = [];
+			
+			
+			var barItemArray = ['../common/html/weightProgress.html','../common/html/weightLineChart.html'];
+			
+				//初始化
+			function initIndexView() {
+				//初始化所有bar页面
+				inittabitemWebviews();
+				//添加bar点击事件接受
+				tapBaritem();
+			}
+				
+				//初始化所有bar页面
+			function inittabitemWebviews() {
+				for(var i = 0; i < barItemArray.length; i++) {
+					barItemWebviewArray[i] = mui.preload({
+						id: barItemArray[i],
+						url: barItemArray[i],
+						styles: {
+							top: '44px',
+							bottom: '51px',
+							left: '0px',
+							bounce: 'vertical',
+							bounceBackground: '#f8f8f8'
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+
+					barItemWebviewArray[i].hide();
+					mainWebview.append(barItemWebviewArray[i]);
+				}
+				barItemWebviewArray[0].show();
+				curBarItemWebview = barItemWebviewArray[0];
+			}
+
+			//添加点击事件
+			function tapBaritem() {
+
+				mui('.mui-bar-tab').on('tap', '.mui-tab-item', function() {
+					var baritem = this;
+					var baritemurl = baritem.getAttribute('href');
+					var header = document.querySelector(".mui-bar-nav");
+					//				indexof()如果为false返回－1所以前面加上~
+					if(!~curBarItemWebview.getURL().indexOf(baritemurl)) {
+						for(var i = 0; i < barItemArray.length; i++) {
+							console.log(barItemArray[i]);
+							console.log(baritemurl);
+							
+							if(barItemArray[i] == baritemurl) {
+
+								//更改头部名字
+									navTitle.innerText = baritem.children[baritem.children.length - 1].innerText;
+								//切换baritemwebview
+								barItemWebviewArray[i].show();
+								curBarItemWebview = barItemWebviewArray[i];
+								break;
+							}
+						}
+					}
+				});
+			}
+
+			
+		</script>
+	</body>
+
+</html>

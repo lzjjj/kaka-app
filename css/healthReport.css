@@ -1,0 +1,135 @@
+body {
+				background-color: #EFEFF4;
+			}
+			
+			.head {
+				text-align: center;
+				width: 100%;
+				min-height: 15rem;
+				background: linear-gradient(to bottom, #FFA500 0%, rgb(255, 108, 70) 100%);
+				;
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+			}
+			
+			.head_up {
+				font-weight: bold;
+			}
+			
+			.head_center {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 10rem;
+				height: 10rem;
+				border: 0.5rem solid #F0F0F0;
+				border-radius: 50%;
+			}
+			
+			.head_center_down {
+				padding-bottom: 0.5rem;
+				color: #F8F8F8;
+				opacity: 0.3;
+			}
+			
+			.has_eat {
+				padding-top: 3.5rem;
+				flex: 1;
+				font-size: 3rem;
+				font-weight: bold;
+				color: white;
+			}
+			
+			.level_title {
+				width: 100%;
+				height: 3rem;
+				text-align: center;
+				line-height: 3rem;
+				border-bottom: 1px solid gainsboro;
+			}
+			
+			.level_box {
+				margin-top: 2rem;
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: #FFFFFF;
+			}
+			
+			.level_box_item {
+				justify-content: center;
+				width: 2rem;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				height: 2rem;
+				border-radius: 0.2rem;
+				margin: 0 0.3rem;
+			}
+			
+			.level_box_item_active {
+				width: 2.5rem;
+				height: 2.5rem;
+			}
+			
+			.level_detail {
+				text-align: center;
+				font-size: 0.9rem;
+				color: gray;
+				padding: 2rem 0.5rem;
+				border-bottom: 1px solid gainsboro;
+			}
+			
+			.health_head {
+				margin-top: 1rem;
+				display: flex;
+				justify-content: space-between;
+			}
+			
+			.health_head_bar {
+				background-color: #21A5F5;
+				width: 0.25rem;
+				height: 1.2rem;
+				margin-right: 0.5rem;
+			}
+			
+			.health_head_center {
+				color: #000000;
+				font-size: 1.3rem;
+			}
+			
+			.health_detail {
+				font-size: 0.7rem;
+				position: relative;
+				top: -0.7rem;
+				color: gray;
+			}
+			
+			.point_pop {
+				position: relative;
+				left: 23%;
+				width: 2rem;
+				height: 0.8rem;
+				border-radius: 0.5rem;
+				background-color: #21A5F5;
+				margin-bottom: 0.8rem;
+				font-size: 0.4rem;
+				text-align: center;
+				line-height: 0.8rem;
+				color: #FFFFFF;
+			}
+			
+			.bottom_button {
+				background-color: #F8664D;
+				width: 90%;
+				height: 2.5rem;
+				line-height: 2.5rem;
+				text-align: center;
+				color: #FFFFFF;
+				border-radius: 0.2rem;
+				margin: 0 auto 2rem auto;
+			}

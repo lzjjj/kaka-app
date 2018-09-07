@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+
+		<style>
+			html {
+				width: 100%;
+				height: 100%;
+			}
+			
+			body {
+				width: 100%;
+				min-height: 100%;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.head_title {
+				color: #000000;
+				padding-top: 15%;
+			}
+			
+			.sex_box {
+				height: 3.5rem;
+				margin: 0 auto;
+				width: 90%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.sex_box_item {
+				line-height: 3.5rem;
+				text-align: center;
+				height: 100%;
+				width: 50%;
+				background-color: gainsboro;
+			}
+			
+			.girl {
+				border-radius: 0 3.5rem 3.5rem 0;
+				color: darkgray;
+			}
+			
+			.boy {
+				border-radius: 3.5rem 0 0 3.5rem;
+				color: darkgray;
+			}
+			
+			.sex_box_item_active {
+				background-color: #FFFFFF;
+				color: #41cea9;
+			}
+			
+			.height {
+				width: 100%;
+				margin: 5% auto 18% auto;
+			}
+			
+			.next_button {
+				width: 94%;
+				height: 3rem;
+				line-height: 3rem;
+				background-color: #41cea9;
+				color: #FFFFFF;
+				border-radius: 0.2rem;
+				margin: 0rem auto 1rem auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav own-main-background-color " style="background-color: #41cea9;">
+			<h1 id="nav-title" class="mui-title" style="color: #FFFFFF;">完善资料1/4</h1>
+		</header>
+		<div style="flex: 1;">
+
+			<p class="head_title">性别</p>
+			<div class="sex_box">
+
+				<div class="sex_box_item boy sex_box_item_active" id="boy" onclick="selectSex('boy','girl')">
+					<span class="mui-icon iconfont icon-man"></span>
+					<span>男</span>
+				</div>
+				<div class="sex_box_item girl" id="girl" onclick="selectSex('girl','boy')">
+					<span class="mui-icon iconfont icon-woman"></span>
+					<span>女</span>
+				</div>
+			</div>
+
+		</div>
+		<div class="height">
+			<p>身高</p>
+			<div style="margin-top: 1rem;color: #41cea9 ;font-size: 1.5rem;">
+				<span id="height">200</span> <span style="font-size: 0.9rem">厘米</span>
+			</div>
+			<div class="mui-input-row mui-input-range" style="display: flex;justify-content: center;width:100%;margin-bottom: 3rem;margin-top: 0.5rem;">
+				<input id="heightInput" type="range" min="100" max="250" style="width: 100%;margin-left: 1rem;">
+			</div>
+		</div>
+		<div class="next_button" onclick="updateUserInfo()">
+			下一步
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../api.js"></script>
+		<script src="../../js/own.js" charset="UTF-8"></script>
+		<script type="text/javascript">
+			var sex = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).user_sex : 0;
+			var height = document.getElementById('height');
+			height.innerText = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).user_height :0
+			var heightInput = document.getElementById('heightInput');
+			mui.init();
+			
+			changeHeight();
+
+			function updateUserInfo() {
+				var userInfo = JSON.parse(localStorage.getItem('user'));
+
+				userInfo.user_sex = sex
+				userInfo.user_height = height.innerText
+					mui.ajax(requestUrls.updateUserInfo, {
+						processData: false,
+						data: JSON.stringify(userInfo),
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							if(data.success) {
+								localStorage.setItem('user', JSON.stringify(data.data));
+								perfectInfo();
+							} else {
+								mui.toast('操作有误');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+						}
+					});
+			}
+
+			function perfectInfo() {
+				pushWebView({
+					webType: 'newWebview_First',
+					id: 'common/html/perfect-info-2.html',
+					href: 'common/html/perfect-info-2.html',
+					aniShow: getaniShow(),
+					title: "完善资料2/4",
+					isBars: false,
+					barsIcon: '',
+					extendOptions: {}
+				})
+			}
+
+			function changeHeight() {
+
+				var hl = "input";
+				if(navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.match(/8./i) == "8.") { //IE 8.0
+					hl = "propertychange";
+				}
+				addEvent(heightInput, hl, function(e) {
+					height.innerText = e.target.value;
+				})
+			}
+
+			function selectSex(first, second) {
+				var firstDom = document.getElementById(first);
+				var secondDom = document.getElementById(second);
+				secondDom.classList.remove('sex_box_item_active');
+				firstDom.classList.add('sex_box_item_active');
+				sex = first == 'boy' ? 1 : (first == 'girl' ? 2 : sex);
+
+			}
+
+			function addEvent(el, type, handle) {
+				try { // Chrome、FireFox、Opera、Safari、IE9.0及其以上版本
+					el.addEventListener(type, handle, false);
+				} catch(e) {
+					try { // IE8.0及其以下版本
+						el.attachEvent('on' + type, handle);
+					} catch(e) { // 早期浏览器
+						el['on' + type] = handle;
+					}
+				}
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>E3-demo</title>
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/own.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<style type="text/css">
+			.mui-active .mui-icon,
+			.mui-active .mui-tab-label {
+				color: #41cea9;
+			}
+			
+			.hide-head {
+				display: none;
+			}
+			
+			.add-active {
+				color: #41cea9;
+			}
+		</style>
+	</head>
+
+	<body class="own-gray-color">
+		<header class="mui-bar mui-bar-nav own-main-background-color ">
+
+			<h1 id="nav-title" class="mui-title">动态</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="barItem/dynamics.html">
+				<span class="mui-icon iconfont icon-jiankangzhuanjia"></span>
+				<span class="mui-tab-label">动态</span>
+			</a>
+			<a class="mui-tab-item" id="food" href="#">
+				<span class="mui-icon iconfont icon-icon"></span>
+				<span class="mui-tab-label">饮食</span>
+			</a>
+			<a class="mui-tab-item " href="barItem/add.html">
+				<span class="mui-icon iconfont icon-caozuozengjia add-active"></span>
+				<span class="mui-tab-label"></span>
+			</a>
+			<a class="mui-tab-item" id="weight" href="#">
+				<span class="mui-icon iconfont icon-tizhong"></span>
+				<span class="mui-tab-label">体重</span>
+			</a>
+			<a class="mui-tab-item" href="barItem/mine.html">
+				<span class="mui-icon iconfont icon-wode"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+
+		<script src="js/mui.min.js" charset="UTF-8"></script>
+		<script type="text/javascript" src="js/own.js"></script>
+
+		<script type="text/javascript" charset="UTF-8">
+			mui.init({
+				swipeBack: false
+			});
+
+			//打开体重页面
+			document.getElementById('weight').addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'barItem/weight.html',
+					id: 'weight',
+					//				styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
+					//					titleNView: { // 窗口的标题栏控件
+					//						titleText: "体重记录", // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+					//						titleColor: "#ffffff", // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
+					//						titleSize: "17px", // 字体大小,默认17px
+					//						backgroundColor: "#21a5f5", // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"
+					//						progress: { // 标题栏控件的进度条样式
+					//							color: "#00FF00", // 进度条颜色,默认值为"#00FF00"  
+					//							height: "2px" // 进度条高度,默认值为"2px"         
+					//						},
+					//						splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+					//							color: "#21a5f5", // 分割线颜色,默认值为"#CCCCCC"  
+					//							height: "1px" // 分割线高度,默认值为"2px"
+					//						}
+					//					}
+					//				}
+				});
+			})
+
+			//打开饮食页面
+			document.getElementById('food').addEventListener('tap', function() {
+				if(!localStorage.getItem('user')) {
+					pushWebView({
+						webType: 'newWebview_First',
+						id: 'mine/login.html',
+						href: 'mine/login.html',
+						aniShow: getaniShow(),
+						title: "登录",
+						isBars: false,
+						barsIcon: '',
+						extendOptions: {}
+					})
+				} else {
+					mui.openWindow({
+						url: 'barItem/food.html',
+						id: 'food',
+
+					});
+				}
+
+			});
+			var navTitle;
+			var mainWebview;
+			var curBarItemWebview;
+
+			var barItemWebviewArray = [];
+			var barItemArray = ['barItem/dynamics.html', 'barItem/food.html', 'barItem/weight.html', 'barItem/wishList.html', 'barItem/add.html', 'barItem/cart.html', 'barItem/mine.html'];
+			mui.plusReady(function() {
+				//获取当前title和当前webview
+				navTitle = document.querySelector('.mui-title');
+				mainWebview = plus.webview.currentWebview();
+
+				plus.navigator.setStatusBarBackground("#41cea9");
+
+				//设置只支持竖屏幕显示
+				plus.screen.lockOrientation("portrait-primary");
+				//初始化与index有关的页面
+				initIndexView();
+
+				//检测是否需要显示导航页面todo
+
+				//判断是否已经登陆,若没有登陆将预加载登陆页面
+				judgelogin();
+
+				//预加载父子模版
+				initTemplate();
+			});
+
+			//初始化
+			function initIndexView() {
+				//初始化所有bar页面
+				inittabitemWebviews();
+				//添加bar点击事件接受
+				tapBaritem();
+			}
+
+			//初始化所有bar页面
+			function inittabitemWebviews() {
+				for(var i = 0; i < barItemArray.length; i++) {
+					barItemWebviewArray[i] = mui.preload({
+						id: barItemArray[i],
+						url: barItemArray[i],
+						styles: {
+							top: '44px',
+							bottom: '51px',
+							left: '0px',
+							bounce: 'vertical',
+							bounceBackground: '#f8f8f8'
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+
+					barItemWebviewArray[i].hide();
+					mainWebview.append(barItemWebviewArray[i]);
+				}
+				barItemWebviewArray[0].show();
+				curBarItemWebview = barItemWebviewArray[0];
+			}
+
+			//添加点击事件
+			function tapBaritem() {
+				mui('.mui-bar-tab').on('tap', '.mui-tab-item', function() {
+					var baritem = this;
+					var baritemurl = baritem.getAttribute('href');
+					var header = document.querySelector(".mui-bar-nav");
+					//				indexof()如果为false返回－1所以前面加上~
+					if(!~curBarItemWebview.getURL().indexOf(baritemurl)) {
+						for(var i = 0; i < barItemArray.length; i++) {
+							if(barItemArray[i] == baritemurl) {
+
+								//更改头部名字
+
+								if(barItemArray[i] == "barItem/add.html") {
+									navTitle.innerText = "发布";
+								} else {
+									navTitle.innerText = baritem.children[baritem.children.length - 1].innerText;
+
+								}
+
+								//切换baritemwebview
+								barItemWebviewArray[i].show();
+								curBarItemWebview = barItemWebviewArray[i];
+								break;
+							}
+						}
+					}
+				});
+			}
+
+			//预加载template
+			function initTemplate() {
+				var webview = mui.preload({
+					id: 'template',
+					url: 'template.html',
+					styles: {
+						top: '-1000px',
+					}
+				});
+				webview.show();
+			};
+
+			function judgelogin() {
+
+				//判断是否已经登录成功//localstorage在页面关闭的时候也同样存在，sessionstorage页面关闭数据不存在
+				if(!localStorage.getItem('user')) {
+					mui.preload({
+						url: 'mine/login.html',
+						id: 'mine/login.html',
+						styles: {
+							top: '0px',
+							bottom: '0px'
+						}
+					});
+				} else {
+					var minewebview = plus.webview.getWebviewById('barItem/mine.html');
+					mui.fire(minewebview, 'loginSuccess', {});
+				}
+			}
+		</script>
+	</body>
+
+</html>

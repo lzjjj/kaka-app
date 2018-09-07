@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>E3父子模版</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/own.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<style type="text/css">
+			/*下面两项是重置muicss的输入框label和input之间的宽比率*/
+			
+			.mui-input-row label {
+				width: 20%;
+			}
+			
+			.mui-input-row label~input {
+				width: 80%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav own-main-background-color">
+
+			<h1 class="mui-title">注册</h1>
+		</header>
+
+		<div class="mui-content own-content-padding">
+			<div class="mui-card" style="margin-top: 80px;">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label><span class="mui-icon iconfont icon-zhanghao"></span></label>
+						<input id="account" class="mui-input-clear" type="text" placeholder="输入手机或则邮箱" />
+					</div>
+					<div class="mui-input-row">
+						<label><span class="mui-icon iconfont icon-mimaxiugai"></span></label>
+						<input id="psd" class="mui-input-clear" type="password" placeholder="输入密码" />
+					</div>
+					<div class="mui-input-row">
+						<label><span class="mui-icon iconfont icon-queren"></span></label>
+						<input id="repsd" class="mui-input-clear" type="password" placeholder="确认密码" />
+					</div>
+				</form>
+			</div>
+			<div class="mui-button-row" style="margin: 10px 15px;">
+				<button type="button" class="mui-btn mui-btn-block own-btn-green" style="padding: 5px 0px;">注册</button>
+			</div>
+		</div>
+
+		<script src="../js/mui.min.js" charset="UTF-8"></script>
+		<script src="../js/own.js" charset="UTF-8"></script>
+		<script src="../common/api.js" charset="UTF-8"></script>
+		<script type="text/javascript" charset="UTF-8">
+			mui.init({
+				swipeBack: true
+			});
+
+			var account;
+			var psd;
+			var repsd;
+			var registerBtn;
+			mui.plusReady(function() {
+				account = document.getElementById('account');
+				psd = document.getElementById('psd');
+				repsd = document.getElementById('repsd');
+				registerBtn = document.querySelector('button[type="button"]');
+
+				registerBtn.addEventListener('tap', function() {
+					if(account.value.length <= 0) {
+						mui.toast('请输入要注册的账号');
+						return;
+					}
+					if(psd.value.length <= 0) {
+						mui.toast('请输入密码');
+						return;
+					}
+					if(repsd.value.length <= 0 || psd.value != repsd.value) {
+						mui.toast('两次输入密码必须一致');
+						return;
+					}
+
+					//联网注册
+					register(account.value, repsd.value);
+				}, false);
+
+			});
+
+			function register(user_phone, user_password) {
+				console.log(user_phone)
+				mui.ajax(requestUrls.register, {
+					processData: false,
+					data: JSON.stringify({
+						user_phone: user_phone,
+						user_password: user_password
+					}),
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						console.log(data.msg);
+						if(data.success){
+							mui.toast(data.msg);
+							var registerwebview = plus.webview.currentWebview();
+							registerwebview.close();
+							pushWebView({
+							webType: 'newWebview_First',
+							id: 'mine/login.html',
+							href: 'mine/login.html',
+							aniShow: getaniShow(),
+							title: "登录",
+							isBars: false,
+							barsIcon: '',
+							extendOptions: {}
+						})
+						}else{
+							mui.toast("该账号已注册，换另一个试试！");
+							
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('错误');
+					}
+				})
+			}
+		</script>
+
+	</body>
+
+</html>

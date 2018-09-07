@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+		<style type="text/css">
+			#myChart {
+				margin-top: 5%;
+				padding-bottom: 5%;
+			}
+			
+			.unit {
+				font-size: 1.1rem;
+				margin-top: 1rem;
+				padding-left: 0.5rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="unit">
+
+			体重 <span style="font-size: 0.8rem;color: gray;">单位：公斤</span>
+		</div>
+		<canvas id="myChart" width="300" height="300"></canvas>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../api.js"></script>
+		<script src="../../js/Chart.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				getWeightData(); 
+				
+			})
+			//初始化图表数据
+
+			function getWeightData() {
+
+				mui.ajax(requestUrls.getALLUserWeight, {
+
+					data: {
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+
+							
+							var ctx = document.getElementById('myChart').getContext('2d');
+							var chart = new Chart(ctx, {
+								// 要创建的图表类型
+								type: 'line',
+
+								// 数据集
+								data: {
+									labels: data.data.weight_dates,
+									datasets: [{
+										label: "体重",
+										backgroundColor: '#21a5f5',
+										borderColor: '#21a5f5',
+										data: data.data.weight_nums,
+									}]
+								},
+
+								// 配置项
+								options: {
+									scales: {
+										yAxes: [{
+											ticks: {
+												beginAtZero: true
+											}
+										}]
+									}
+								}
+							});
+						} else {
+							mui.toast(data.msg);
+
+						}
+					}
+				});
+			}
+			//监听数据刷新
+			window.addEventListener("refreshchartPage", function() {
+				getWeightData();
+			})
+		</script>
+	</body>
+
+</html>

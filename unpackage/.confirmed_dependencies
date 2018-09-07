@@ -1,0 +1,413 @@
+{
+	"index.html": {
+		"resources": [
+			"barItem/home.html",
+			"barItem/dynamics.html",
+			"css/own.css",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"fonts/iconfont.woff",
+			"js/own.js"
+		],
+		"refer": [
+			"barItem/category.html",
+			"barItem/wishList.html",
+			"barItem/home.html",
+			"barItem/mine.html",
+			"template.html",
+			"barItem/cart.html",
+			"mine/login.html",
+			"barItem/add.html",
+			"barItem/dynamics.html",
+			"barItem/food.html",
+			"barItem/weight.html"
+		]
+	},
+	"template.html": {
+		"refer": [
+			"template-main-third.html",
+			"template-main-second.html",
+			"template-main-first.html",
+			"mine/login.html",
+			"mine/user-info.html",
+			"mine/register.html",
+			"mine/forget-psd.html",
+			"mine/health-report.html",
+			"mine/change-psd.html",
+			"common/html/release-dynamic.html",
+			"common/html/perfect-info-1.html",
+			"common/html/perfect-info-2.html",
+			"common/html/perfect-info-3.html",
+			"common/html/perfect-info-4.html"
+		],
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css"
+		]
+	},
+	"barItem/food.html": {
+		"refer": [
+			"common/addFood.html",
+			"common/html/addFood.html"
+		],
+		"resources": [
+			"css/food.css",
+			"img/foodbg.jpg",
+			"img/3.jpg",
+			"css/own.css",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"fonts/iconfont.woff",
+			"js/template.js",
+			"common/api.js",
+			"js/own.js",
+			"img/empity.png",
+			"css/addFood.css",
+			"img/1.jpg",
+			"fonts/mui.ttf"
+		]
+	},
+	"barItem/add.html": {
+		"resources": [
+			"img/weight.jpg",
+			"img/activity.png",
+			"img/food.png",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/own.js"
+		],
+		"refer": [
+			"barItem/food.html",
+			"barItem/weight.html"
+		]
+	},
+	"barItem/wishList.html": {
+		"resources": [
+			"js/own.js"
+		]
+	},
+	"barItem/mine.html": {
+		"resources": [
+			"img/bg.jpeg",
+			"fonts/mui.ttf",
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"mine/user-info.html",
+			"mine/my-order-needtem.html",
+			"mine/change-psd-needtem.html",
+			"mine/change-email-needtem.html",
+			"mine/feedback-needtem.html",
+			"mine/change-psd.html",
+			"mine/change-email.html",
+			"mine/my-order.html",
+			"mine/feedback.html",
+			"mine/health-report.html",
+			"mine/login.html",
+			"mine/my-dynamic.html",
+			"mine/colloection.html"
+		]
+	},
+	"barItem/dynamics.html": {
+		"resources": [
+			"css/dynamics.css",
+			"img/2.jpg",
+			"img/touxiang.jpg",
+			"js/mui.min.js",
+			"img/1.jpg",
+			"css/mui.min.css",
+			"img/50.jpg",
+			"img/bg.png",
+			"img/thumbs-up.png",
+			"img/actionsheet.png",
+			"common/api.js",
+			"img/3.jpg",
+			"js/template.js",
+			"js/own.js",
+			"img/photo.png",
+			"js/scroll.js"
+		],
+		"refer": [
+			"common/html/dynamic-detail.html"
+		]
+	},
+	"common/addFood.html": {
+		"resources": [
+			"img/photo.png",
+			"fonts/mui.ttf"
+		]
+	},
+	"barItem/weight.html": {
+		"resources": [
+			"css/own.css",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"css/food.css",
+			"fonts/iconfont.woff",
+			"common/html/weightProgress.html",
+			"common/html/weightLineChart.html"
+		],
+		"refer": [
+			"common/html/weightLineChart.html",
+			"common/html/weightProgress.html"
+		]
+	},
+	"common/html/dynamic-detail.html": {
+		"resources": [
+			"img/weightBg.jpg",
+			"js/mui.min.js",
+			"img/touxiang.jpg",
+			"css/mui.min.css",
+			"img/thumb-unselect.png",
+			"css/own.css",
+			"img/comments.png",
+			"fonts/mui.ttf",
+			"css/iconfont.css",
+			"img/uncollect.png",
+			"img/collected.png",
+			"img/thumb-select.png",
+			"js/mui.zoom.js",
+			"js/mui.previewimage.js",
+			"css/imgView.css",
+			"js/template.js",
+			"common/api.js"
+		]
+	},
+	"common/html/addFood.html": {
+		"resources": [
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"img/photo.png",
+			"img/3.jpg",
+			"css/iconfont.css",
+			"fonts/iconfont.woff",
+			"js/handlePhoto.js",
+			"css/addFood.css",
+			"js/template.js",
+			"common/api.js",
+			"js/own.js",
+			"js/scroll.js"
+		]
+	},
+	"common/html/weightLineChart.html": {
+		"resources": [
+			"js/Chart.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"barItem/weight.html",
+			"js/mui.min.js",
+			"js/jquery-1.7.2.js",
+			"common/api.js"
+		],
+		"refer": [
+			"barItem/weight.html"
+		]
+	},
+	"common/html/weightProgress.html": {
+		"resources": [
+			"css/own.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"css/weightProgress.css",
+			"js/template.js",
+			"common/api.js",
+			"js/own.js"
+		]
+	},
+	"barItem/cart.html": {
+		"resources": [
+			"img/50.jpg"
+		]
+	},
+	"mine/login.html": {
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"common/api.js"
+		]
+	},
+	"mine/user-info.html": {
+		"resources": [
+			"img/1.jpg",
+			"js/handlePhoto.js",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/template.js"
+		]
+	},
+	"mine/change-psd.html": {
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"common/api.js"
+		]
+	},
+	"mine/my-order.html": {
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css"
+		]
+	},
+	"mine/change-email.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		]
+	},
+	"mine/forget-psd.html": {
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"fonts/mui.ttf"
+		]
+	},
+	"mine/register.html": {
+		"resources": [
+			"css/own.css",
+			"js/own.js",
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"common/api.js"
+		]
+	},
+	"mine/feedback.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		]
+	},
+	"mine/health-report.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"img/foodbg.jpg",
+			"css/healthReport.css",
+			"fonts/mui.ttf",
+			"js/own.js",
+			"js/template.js",
+			"common/api.js"
+		],
+		"refer": [
+			"common/html/perfect-info-1.html"
+		]
+	},
+	"template-main-first.html": {
+		"resources": [
+			"fonts/mui.ttf"
+		]
+	},
+	"common/html/release-dynamic.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"img/photo.png",
+			"img/1.jpg",
+			"img/delete-dynamic-img.png",
+			"img/add-img.png",
+			"js/handleDynamicPic.js",
+			"common/api.js"
+		]
+	},
+	"common/html/perfect-info-1.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/iconfont.css",
+			"css/mui.min.css",
+			"fonts/iconfont.woff",
+			"js/own.js",
+			"common/api.js"
+		]
+	},
+	"common/html/perfect-info-2.html": {
+		"resources": [
+			"js/mui.picker.min.js",
+			"js/jquery-1.7.2.js",
+			"css/mui.picker.min.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/own.js",
+			"common/api.js"
+		]
+	},
+	"common/html/perfect-info-3.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/own.js",
+			"common/api.js"
+		]
+	},
+	"common/html/perfect-info-4.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/own.js",
+			"common/api.js"
+		]
+	},
+	"mine/my-dynamic.html": {
+		"resources": [
+			"img/thumb-unselect.png",
+			"js/mui.zoom.js",
+			"css/imgView.css",
+			"img/comments.png",
+			"img/touxiang.jpg",
+			"js/mui.previewimage.js",
+			"img/3.jpg",
+			"img/uncollect.png",
+			"common/api.js",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/template.js",
+			"img/thumbs-up.png",
+			"img/actionsheet.png"
+		],
+		"refer": [
+			"common/html/dynamic-detail.html"
+		]
+	},
+	"mine/colloection.html": {
+		"resources": [
+			"common/api.js",
+			"js/mui.zoom.js",
+			"css/imgView.css",
+			"js/mui.previewimage.js",
+			"js/template.js",
+			"img/thumbs-up.png",
+			"img/actionsheet.png",
+			"js/mui.min.js",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"common/html/dynamic-detail.html"
+		]
+	}
+}

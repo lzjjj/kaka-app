@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			body {
+				background-color: #FFFFFF;
+			}
+			
+			.own-main-background-color {
+				background-color: #41cea9;
+				color: #FFFFFF;
+			}
+			
+			.textarea_class {
+				margin-top: 2.7rem;
+				width: 100%;
+				/*border: none;*/
+			}
+			
+			.dynamic_img_box {
+				padding: 0.5rem;
+				width: 100%;
+				height: auto;
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				/*justify-content: space-around;*/
+			}
+			
+			.dynamic_img {
+				width: 4rem;
+				height: 4rem;
+			}
+			
+			.add_img {
+				width: 4rem;
+				height: 4rem;
+			}
+			
+			.dynamic_img_box_item {
+				position: relative;
+				width: 25%;
+			}
+			
+			.delete_img {
+				width: 2.5rem;
+				height: 2.5rem;
+				position: absolute;
+				left: 15%;
+				top: 20%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav own-main-background-color">
+			<button type="button" class=" mui-btn  mui-btn-link mui-pull-right own-button" onclick="releaseDynamic()">
+			<!--<span class="mui-action-back mui-icon mui-icon-left-nav own-left-nav-color"></span>-->
+			<span style="color: #FFFFFF;">确定</span>
+		</button>
+			<h1 class="mui-title" style="color: #FFFFFF;">发布动态</h1>
+		</header>
+		<textarea name="" rows="5" placeholder="晒元气美食,晒健身自拍,晒对比照........" class="textarea_class" id="dynamic_details"></textarea>
+		<div class="dynamic_img_box" id="dynamic_img_box">
+
+			<div class="dynamic_img_box_item" id="add_img" onclick="focunsOnPic()">
+				<img src="../../img/add-img.png" class="add_img" />
+
+			</div>
+
+		</div>
+
+		<div style="position: fixed;bottom: 0;width: 100%;">
+
+			<div style="width: 100%;text-align: center;border-top: 1px solid #F8F8F8;height: 3rem;display: flex;align-items: center;justify-content: center;background-color: #FFFFFF;" onclick="focunsOnPic()">
+				<img src="../../img/photo.png" style="width: 2rem;height: 2rem;" />
+			</div>
+			<div style="display: flex;align-items: center;justify-content: space-between;background-color: gainsboro;padding: 0.5rem;">
+				<div style="display: flex;align-items: center;justify-content: space-between;margin-left: 0.5rem;">
+					<div class="mui-switch mui-switch-mini" id="mySwitch">
+						<div class="mui-switch-handle"></div>
+
+					</div>
+					<div style="color: gray;margin-left: 0.5rem;">仅自己可见</div>
+				</div>
+
+				<div style="color: gray;padding-right: 0.5rem;">0/500</div>
+
+			</div>
+
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../api.js"></script>
+
+		<script src="../../js/handleDynamicPic.js"></script>
+		<script type="text/javascript">
+			var canRequest = true
+			var isPrvite = 0;
+			mui.init()
+			mui.plusReady(function() {
+				document.getElementById("mySwitch").addEventListener("toggle", function(event) {
+					if(event.detail.isActive) {
+						isPrvite = 1;
+						
+					} else {
+						isPrvite = 0;
+						
+					}
+
+				})
+
+			})
+			//拍照触发监听
+			function focunsOnPic() {
+				if(mui.os.plus) {
+
+					var a = [{
+							title: "拍照"
+						},
+						{
+							title: "从手机相册选择"
+						}
+					]
+
+					plus.nativeUI.actionSheet({
+						title: "上传头像",
+						cancel: "取消",
+						buttons: a
+					}, function(b) { //actionsheet 点击之后出现的东西
+						switch(b.index) {
+							case 0:
+								break;
+							case 1:
+								getpic();
+								break;
+							case 2:
+								getimg();
+								break;
+							default:
+								break;
+						}
+					})
+				}
+			}
+
+			//删除图片
+			function deletePic(path, e) {
+				var dynamicPic = window.dynamicPic;
+				for(var i in dynamicPic) {
+					if(path == dynamicPic[i]) {
+						window.dynamicPic.splice(i, 1);
+						document.getElementById("dynamic_img_box").removeChild(e);
+						console.log(window.dynamicPic.length)
+					}
+				}
+
+			}
+
+			function releaseDynamic() {
+				if(document.getElementById("dynamic_details").value && canRequest) {
+					canRequest = false
+					mui.ajax(requestUrls.insertDynamic, {
+						processData: false,
+						data: JSON.stringify({
+							dynamic_details: document.getElementById("dynamic_details").value,
+							user_id: JSON.parse(localStorage.getItem('user')).user_id,
+							isPrvite:isPrvite
+						}),
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							if(data.success) {
+								//								console.log(data.data.dynamic_id);
+								var list = window.dynamicPic;
+								for(var i in list) {
+									insertDynamicPic(list[i], data.data.dynamic_id);
+									if(i == list.length - 1) {
+										setTimeout(function() {
+											var dynamicswebview = plus.webview.getWebviewById('barItem/dynamics.html'); //更新数据
+											mui.fire(dynamicswebview, 'pagedynamicsrefresh');
+											canRequest = true
+											mui.back();
+										}, 500)
+									}
+								}
+
+							} else {
+								mui.toast(data.msg)
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							mui.toast('错误');
+						}
+					});
+				} else {
+					mui.toast('发布内容不能为空')
+				}
+
+			}
+
+			//插入动态图片
+			function insertDynamicPic(imgPath, dynamic_id) {
+
+				var image = new Image();
+				image.src = imgPath;
+				var imgData = getBase64Image(image);
+
+				mui.ajax(requestUrls.insertDynamicPic, {
+					data: {
+						imgData: imgData,
+						dynamic_id: dynamic_id
+					},
+					type: 'post',
+					success: function(data) {
+
+						mui.toast("动态发布成功");
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('错误');
+					}
+				});
+			}
+
+			//转换64
+			function getBase64Image(img) {
+				var canvas = document.createElement("canvas");
+				var width = img.width;
+				var height = img.height;
+
+				if(width > height) {
+					if(width > 450) {
+						height = Math.round(height *= 450 / width);
+						width = 450;
+					}
+				} else {
+					if(height > 450) {
+						width = Math.round(width *= 450 / height);
+						height = 450;
+					}
+				}
+
+				canvas.width = width;
+				canvas.height = height;
+
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, width, height); /*绘图*/
+				var dataURL = canvas.toDataURL("image/png", 0.8);
+				return dataURL.replace("data:image/png;base64,", "");
+
+			}
+		</script>
+	</body>
+
+</html>

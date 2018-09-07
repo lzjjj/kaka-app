@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/dynamics.css" rel="stylesheet" />
+
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<script id="dynamic-item" type="text/html">
+			{{if list==0}}
+			<div style="min-height:100%;width: 100%;position: fixed;top: 50%;left: 38%;">
+				暂无动态数据
+			</div>
+			{{/if}} {{each list as value i}}
+			<div class="item" onclick="luanchToDetail({{value.user_id}},{{value.dynamic_id}})" data-user_id="{{value.user_id}} "><img src="{{value.dynamic_pic}}" class="item_img" />
+				<div class="item_center">
+					<p class="item_p"> {{value.dynamic_details}}</p>
+					<img src="../img/actionsheet.png" class="item_center_img" onclick="actionSheet({{value.dynamic_id}},{{i}})" />
+				</div>
+				<div class="item_bottom">
+					<div class="item_bottom_left">
+						<img src="{{value.user_pic}}" class="head_img" /> {{value.user_name}}
+					</div>
+					<div class="item_bottom_right"><img src="../img/thumbs-up.png" class="thumb_img" /> {{value.be_like_num}}
+					</div>
+				</div>
+			</div>
+			{{/each}}
+
+		</script>
+
+		<div class="dynamic_list" id="dynamicList">
+
+		</div>
+		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+			<!-- 可选择菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#" class="actionsheet_color" onclick="collect()">收藏</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#" class="actionsheet_color" onclick="unInterested()">不感兴趣</a>
+				</li>
+			</ul>
+			<!-- 取消菜单 -->
+			<ul class="mui-table-view" onclick="hidePop()">
+				<li class="mui-table-view-cell">
+					<a href="#sheet1" class="actionsheet_color"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		<div class="hover_button" onclick="luanchToReleaseDynamic()">
+			<img src="../img/photo.png" />
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../common/api.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/own.js"></script>
+		<script src="../js/scroll.js"></script>
+		<script type="text/javascript">
+			var canRequest = true;
+			var allCount = 0
+			var page = 1
+			var list = [];
+			var currentDynamicId = "";
+			var index = ""
+			mui.init();
+			mui.plusReady(function() {
+				getDynamicData();
+				document.addEventListener("tap", function() {
+					window.event.stopPropagation();
+
+					if(!localStorage.getItem('user')) {
+
+						pushWebView({
+							webType: 'newWebview_First',
+							id: 'mine/login.html',
+							href: 'mine/login.html',
+							aniShow: getaniShow(),
+							title: "登录",
+							isBars: false,
+							barsIcon: '',
+							extendOptions: {}
+						})
+					}
+				})
+
+			})
+
+			//获取动态数据
+			function getDynamicData() {
+				canRequest = false;
+				mui.ajax(requestUrls.dynamicList, {
+					data: {
+						page: page,
+						type:0
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+
+						list = list.concat(data.data);
+						allCount = data.allCount
+						var html = template('dynamic-item', {
+							list: list
+						});
+
+						document.getElementById("dynamicList").innerHTML = html;
+						canRequest = true
+					}
+				});
+			}
+
+			//点击展示弹窗
+			function actionSheet(dynamicId, key) {
+				window.event.stopPropagation();
+				console.log(key)
+				currentDynamicId = dynamicId;
+				index = key
+				mui('#sheet1').popover('toggle');
+			}
+			//点击跳转详情页面 
+			function luanchToDetail(user_id, dynamic_id) {
+				removeScroll()
+				if(!localStorage.getItem('user')) {
+					pushWebView({
+						webType: 'newWebview_First',
+						id: 'mine/login.html',
+						href: 'mine/login.html',
+						aniShow: getaniShow(),
+						title: "登录",
+						isBars: false,
+						barsIcon: '',
+						extendOptions: {}
+					})
+				} else {
+					removeScroll()
+
+					//打开动态详情页面
+					mui.openWindow({
+						url: '../common/html/dynamic-detail.html',
+						id: 'dynamic-detail',
+						extras: {
+							user_id: user_id,
+							dynamic_id: dynamic_id
+						},
+						styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
+							titleNView: { // 窗口的标题栏控件
+								titleText: "动态详情", // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+								titleColor: "#FFFFFF", // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
+								titleSize: "17px", // 字体大小,默认17px
+								backgroundColor: "#41cea9", // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"
+								progress: { // 标题栏控件的进度条样式
+									color: "#00FF00", // 进度条颜色,默认值为"#00FF00"  
+									height: "2px" // 进度条高度,默认值为"2px"         
+								},
+								splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									color: "#41cea9", // 分割线颜色,默认值为"#CCCCCC"  
+									height: "1px" // 分割线高度,默认值为"2px"
+								}
+							}
+						}
+					});
+				}
+			}
+
+			//不感兴趣操作
+			function unInterested() {
+				list.splice(index, 1);
+				var html = template('dynamic-item', {
+					list: list
+				});
+
+				document.getElementById("dynamicList").innerHTML = html;
+				mui('#sheet1').popover('hide');
+			}
+
+			//隐藏pop
+			function hidePop() {
+				mui('#sheet1').popover('hide');
+			}
+
+			//收藏操作
+			function collect() {
+
+				if(!localStorage.getItem('user')) {
+					pushWebView({
+						webType: 'newWebview_First',
+						id: 'mine/login.html',
+						href: 'mine/login.html',
+						aniShow: getaniShow(),
+						title: "登录",
+						isBars: false,
+						barsIcon: '',
+						extendOptions: {}
+					})
+				} else {
+					console.log(currentDynamicId);
+					mui.ajax(requestUrls.collect, {
+						data: {
+							dynamic_id: currentDynamicId,
+							user_id: JSON.parse(localStorage.getItem('user')).user_id,
+							type: 1
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'get', //HTTP请求类型
+						success: function(data) {
+
+							if(data.success) {
+								mui.toast(data.msg);
+
+							} else {
+								mui.toast(data.msg);
+
+							}
+							mui('#sheet1').popover('hide');
+						}
+					});
+				}
+			}
+
+			
+			//跳转发布动态页面
+			function luanchToReleaseDynamic() {
+
+				pushWebView({
+					webType: 'newWebview_First',
+					id: 'common/html/release-dynamic.html',
+					href: 'common/html/release-dynamic.html',
+					aniShow: getaniShow(),
+					title: "发布动态",
+					isBars: false,
+					barsIcon: '',
+					extendOptions: {}
+				})
+			}
+
+			window.addEventListener('scroll', function() {
+				var top = 　getScrollHeight() - (getScrollTop() + getWindowHeight());
+				if(top == 0 && canRequest && list.length < allCount) {
+					page += 1
+					getDynamicData();
+				} else if(top == 0 && list.length == allCount) {
+					mui.toast('已到底部')
+				}
+			})
+
+			//监听页面刷新事件
+			window.addEventListener('pagedynamicsrefresh', function() {
+				page = 1
+				list = [];
+				getDynamicData();
+
+			})
+		</script>
+	</body>
+
+</html>

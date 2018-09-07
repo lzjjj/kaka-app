@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
+		<style>
+			html {
+				width: 100%;
+				height: 100%;
+			}
+			
+			body {
+				width: 100%;
+				min-height: 100%;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.date-title {
+				font-size: 1rem;
+				text-align: center;
+				padding-top: 20%;
+				color: #000000;
+			}
+			
+			.birth-date {
+				color: #41cea9;
+				font-size: 1.2rem;
+				text-align: center;
+			}
+			
+			.select-date {
+				font-size: 0.9rem;
+				width: 50%;
+				height: 3rem;
+				line-height: 3rem;
+				background-color: #41cea9;
+				color: #FFFFFF;
+				border-radius: 0.5rem;
+				margin: 5rem auto 2rem auto;
+			}
+			
+			.next_button {
+				text-align: center;
+				width: 94%;
+				height: 3rem;
+				line-height: 3rem;
+				background-color: #41cea9;
+				color: #FFFFFF;
+				border-radius: 0.2rem;
+				margin: 0rem auto 1rem auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav own-main-background-color " style="background-color: #41cea9;">
+			<h1 id="nav-title" class="mui-title" style="color: #FFFFFF;">完善资料2/4</h1>
+		</header>
+		<div style="flex: 1">
+			<p class="date-title">出生日期</p>
+			<p class="birth-date" id="birth-date">1994-11-28</p>
+			<div class="select-date" id="dateButton" data-options='{"type":"date","beginYear":1949,"endYear":2500}'>
+				点击选择出生日期
+			</div>
+		</div>
+
+		<div class="next_button" onclick="updateUserInfo()">
+			下一步
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-1.7.2.js"></script>
+		<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/own.js" charset="UTF-8"></script>
+		<script src="../api.js"></script>
+		<script type="text/javascript">
+			var birthDate = document.getElementById('birth-date');
+			(function($) {
+				
+				$.init();
+				
+				birthDate.innerText = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')).user_birth_date : '1999-11-28'
+				var result = document.getElementById('dateButton');
+
+				result.addEventListener('tap', function() {
+
+					var optionsJson = this.getAttribute('data-options') || '{}';
+
+					var options = JSON.parse(optionsJson);
+
+					var picker = new $.DtPicker(options);
+
+					picker.show(function(rs) {
+						birthDate.innerText = rs.text;
+						picker.dispose();
+					});
+
+					　　　
+				}, false);
+
+				　　
+			})(mui);
+			function updateUserInfo() {
+				var userInfo = JSON.parse(localStorage.getItem('user'));
+				userInfo.user_birth_date = birthDate.innerText
+					mui.ajax(requestUrls.updateUserInfo, {
+						processData: false,
+						data: JSON.stringify(userInfo),
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							if(data.success) {
+								localStorage.setItem('user', JSON.stringify(data.data));
+								perfectInfo();
+							} else {
+								mui.toast('操作有误');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+						}
+					});
+			}
+			function perfectInfo() {
+				pushWebView({
+					webType: 'newWebview_First',
+					id: 'common/html/perfect-info-3.html',
+					href: 'common/html/perfect-info-3.html',
+					aniShow: getaniShow(),
+					title: "完善资料3/4",
+					isBars: false,
+					barsIcon: '',
+					extendOptions: {}
+				})
+			}
+		</script>
+	</body>
+
+</html>

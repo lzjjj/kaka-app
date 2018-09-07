@@ -1,0 +1,513 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/own.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/imgView.css" />
+
+		<style type="text/css">
+			p,
+			div {
+				padding: 0;
+				margin: 0;
+			}
+			
+			body {
+				min-height: 100%;
+				background-color: #Ff8f8f8;
+				margin-bottom: 2.5rem;
+			}
+			
+			.dynamic_detail {
+				background-color: #FFFFFF;
+				padding: 0.5rem 0.5rem 0 0.5rem;
+			}
+			
+			.dynamic_detail_head {
+				align-items: center;
+				background-color: #FFFFFF;
+				display: flex;
+			}
+			
+			.dynamic_detail_head>div {
+				margin-left: 0.5rem;
+			}
+			
+			.dynamic_detail_head_img {
+				width: 3rem;
+				height: 3rem;
+				border-radius: 50%;
+			}
+			
+			.dynamic_detail_imgs {
+				padding-top: 0.5rem;
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-around;
+				box-sizing: border-box;
+			}
+			
+			.dynamic_detail_imgs>img {
+				min-width: 25%;
+				margin: 0.5rem;
+				flex: 0.9;
+				min-height: 5rem;
+				max-height: 10rem;
+			}
+			
+			.descrition {
+				font-size: 0.8rem;
+			}
+			
+			.comments {
+				padding: 0.5rem;
+				margin-top: 0.5rem;
+				background-color: #FFFFFF;
+			}
+			
+			.comments_item {
+				border-bottom: 1px solid #F8F8F8;
+				padding: 0.5rem 0;
+			}
+			
+			.comments_item_head {
+				align-items: center;
+				display: flex;
+			}
+			
+			.comments_item_head img {
+				width: 2rem;
+				height: 2rem;
+				border-radius: 50%;
+				margin-right: 0.5rem;
+			}
+			
+			.comment_dec {
+				padding-top: 0.3rem;
+				font-size: 0.8rem;
+				padding-left: 2.5rem;
+			}
+			
+			.comments_title {
+				border-bottom: 1px solid #F8F8F8;
+			}
+			
+			.detail_footer {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				background-color: #FFFFFF;
+				display: flex;
+				justify-content: space-around;
+				border-top: 1px solid #F8F8F8;
+				height: 2.5rem;
+				/*line-height: 2.5rem;*/
+				align-items: center;
+			}
+			
+			.detail_footer>div {
+				width: 30%;
+				text-align: center;
+				border-right: 1px solid gainsboro;
+				height: 1rem;
+				font-size: 0.8rem;
+				color: gray;
+			}
+			
+			.detail_footer>:last-child {
+				border: none;
+			}
+			
+			.footer_img {
+				width: 1.2rem;
+				height: 1.2rem;
+				vertical-align: middle;
+			}
+			
+			.comment_nav {
+				width: 100%;
+				display: none;
+				position: fixed;
+				bottom: 0;
+				align-items: center;
+				justify-content: space-between;
+				z-index: 100;
+				background-color: #FFFFFF;
+				padding: 0.5rem 0;
+			}
+			
+			.comment_nav>input {
+				margin-left: 0.5rem;
+				width: 80%;
+				height: 2.5rem;
+				border: 1px solid gainsboro;
+				border-radius: 0.2rem;
+				padding-left: 0.1rem;
+			}
+			
+			.comment_nav>div {
+				margin-right: 0.5rem;
+				color: red;
+			}
+			
+			.comment_box {
+				background-color: #F5F5F9;
+				padding: 0.2rem;
+				width: 100%;
+				box-sizing: border-box;
+				font-size: 0.75rem;
+			}
+			
+			.comment_box_item {
+				/*display: flex;*/
+			}
+			
+			.comment_box_item>:first-child {
+				color: cornflowerblue;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script id="dynamic-detail" type="text/html">
+			<div class="dynamic_detail">
+				<div class="dynamic_detail_head">
+					<img src="{{detail.dymanicDetail.user_pic}}" class="dynamic_detail_head_img" />
+					<div id="">
+						<p style="color: black ;">{{detail.dymanicDetail.user_name}}</p>
+						<p style="color: gray;font-size: 0.7rem;">{{detail.dymanicDetail.create_date}}</p>
+					</div>
+				</div>
+				<div class="dynamic_detail_imgs">
+					{{each detail.picList as item}}
+					<img src="{{item.dynamic_pic}}" data-preview-src="" data-original="" data-preview-group="1" /> {{/each}}
+
+				</div>
+				<div class="descrition"># {{detail.dymanicDetail.dynamic_details}} #
+				</div>
+			</div>
+
+			{{if comments.length==0}}
+			<div style="padding-top:3rem;text-align: center;">
+				暂无评论记录
+
+			</div>
+			{{/if}} {{if comments.length>0}}
+			<div class="comments">
+				<p class="comments_title">评论{{comments.length}}</p>
+
+				{{each comments as item}}
+
+				<div class="comments_item">
+					<div class="comments_item_head">
+						<div style="display: flex;flex: 1;align-items: center;">
+							<img src="{{item.parentComment.user_pic}}" />
+							<div id="">
+								<p style="color: black ;font-size: 0.6rem;">{{item.parentComment.user_name}}</p>
+								<p style="color: gray;font-size: 0.4rem;">{{item.parentComment.create_date}}</p>
+							</div>
+						</div>
+
+						<div class="mui-icon mui-icon-chatbubble" style="float: right;" onclick="handleCpmment({{detail.dymanicDetail.parent_id?detail.dymanicDetail.parent_id:0}},{{detail.dymanicDetail.dynamic_id}},{{detail.dymanicDetail.user_id}},{{item.parentComment.comments_id}},2)"></div>
+					</div>
+					<div class="comment_dec">
+						<div id="">
+							{{item.parentComment.comments_details}}
+						</div>
+						{{if item.childComment.length!=0}}
+						<div class="comment_box">
+							{{each item.childComment as value}} {{if !value.be_returned_id}}
+							<div class="comment_box_item" onclick="handleCpmment({{value.parent_id}},{{detail.dymanicDetail.dynamic_id}},{{detail.dymanicDetail.user_id}},{{item.parentComment.comments_id}},3)">
+								<span id="">
+									{{value.parent_user_name}}：
+								</span>
+								<span id="">
+									{{value.comments_details}}
+								</span>
+							</div>
+							{{/if}} {{if value.be_returned_id}}
+							<div class="comment_box_item" onclick="handleCpmment({{value.be_returned_id}},{{detail.dymanicDetail.dynamic_id}},{{detail.dymanicDetail.user_id}},{{item.parentComment.comments_id}},3)">
+								<span id="">
+									{{value.returned_user_name}} 回复 {{value.parent_user_name}}：
+								</span>
+								<span id="">
+									{{value.comments_details}}
+								</span>
+							</div>
+							{{/if}} {{/each}}
+						</div>
+						{{/if}}
+					</div>
+				</div>
+				{{/each}}
+
+			</div>
+			{{/if}}
+			<footer class="detail_footer">
+				<div id="thumb" onclick="thumbUp({{detail.dymanicDetail.dynamic_id}},{{detail.dymanicDetail.user_id}})">
+					<img id="thumb_img" src="../../img/thumb-unselect.png" class="footer_img" />&nbsp;&nbsp;
+					<span id="thumb-num">
+						{{detail.dymanicDetail.be_like_num}}
+					</span>
+				</div>
+				<div id="comments" onclick="handleCpmment({{detail.dymanicDetail.parent_id?detail.dymanicDetail.parent_id:0}},{{detail.dymanicDetail.dynamic_id}},0,0,1)">
+					<img src="../../img/comments.png" class="footer_img" />&nbsp;&nbsp;{{comments.length}}
+				</div>
+				<div id="collect" onclick="collect({{detail.dymanicDetail.dynamic_id}})">
+					{{if !detail.has_collect}}
+					<img id="collect_img" src="../../img/uncollect.png" class="footer_img" />&nbsp;&nbsp; {{/if}} {{if detail.has_collect}}
+					<img id="collect_img" src="../../img/collected.png" class="footer_img" />&nbsp;&nbsp; {{/if}}
+					<span id="collect_num">
+						{{detail.collect_num}}
+					</span>
+				</div>
+			</footer>
+			<div class="comment_nav" id="comment_nav">
+				<input type="" name="" id="comment_nav_input" value="" placeholder="来说两句吧..." />
+				<div id="" onclick="insertComments()">
+					发送
+				</div>
+			</div>
+			
+		</script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../api.js"></script>
+
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/template.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			var user_id;
+			var dynamic_id;
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				user_id = self.user_id; //获得参数
+				
+				dynamic_id = self.dynamic_id;
+				getDetailData(user_id, dynamic_id);
+
+			})
+
+			//			onblur="hideCommentBox()"
+
+			//插入评论
+			function insertComments() {
+				var obj = JSON.parse(sessionStorage.getItem("commentsMsg"));
+
+				var comment_nav_input = document.getElementById("comment_nav_input");
+				var comments_details = comment_nav_input.value;
+				console.log("comments_details是" + comments_details);
+				if(comments_details){
+									mui.ajax(requestUrls.setComments, {
+					data: {
+						be_returned_id: JSON.parse(localStorage.getItem('user')).user_id,
+						parent_id: obj.parent_id,
+						comments_details: comments_details,
+						dynamic_id: obj.dynamic_id,
+						user_id: obj.user_id,
+						type: obj.type,
+						belong_id: obj.belong_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data.success) {
+							hideCommentBox();
+							getDetailData(user_id, dynamic_id);
+							
+							mui.toast(data.msg);
+						}
+					}
+				});
+				} else {
+					mui.toast('请填写评论内容')
+				}
+
+
+			}
+
+			//获取动态详情数据
+			function getDetailData(user_id, dynamic_id) {
+				var list = {}
+				mui.ajax(requestUrls.dynamicDetail, {
+					data: {
+						handle_user_id: JSON.parse(localStorage.getItem('user')).user_id,
+						dynamic_id: dynamic_id,
+						user_id: user_id
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						list.detail = [];
+						list.detail = data.data;
+
+						getComments(dynamic_id, list)
+						
+					}
+				});
+
+			}
+
+			//获取评论
+			function getComments(dynamic_id, list) {
+				mui.ajax(requestUrls.getComments, {
+					data: {
+
+						dynamic_id: dynamic_id,
+
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+
+						list.comments = data.data;
+						list.detail.dymanicDetail.create_date = pastTime(list.detail.dymanicDetail.create_date);
+						var html = template('dynamic-detail', list);
+						document.body.innerHTML = html;
+						mui.previewImage();
+					}
+				});
+			}
+
+			//点赞操作
+			function thumbUp(dynamic_id, user_id) {
+				var thumb_img = document.getElementById('thumb_img');
+				var thumbNum = document.getElementById('thumb-num');
+				var type;
+				if(thumb_img.src.indexOf('thumb-unselect.png') > 0) {
+
+					type = 1;
+					thumb_img.src = '../../img/thumb-select.png'
+				} else {
+					type = 0;
+					thumb_img.src = '../../img/thumb-unselect.png'
+				}
+				mui.ajax(requestUrls.thumbUp, {
+					data: {
+						dynamic_id: dynamic_id,
+						user_id: user_id,
+						type: type
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data) {
+							var myCollectPage = plus.webview.getWebviewById('../mine/colloection.html');
+							mui.fire(myCollectPage,'myCollectFresh',{})
+							thumbNum.innerText = data.data.be_like_num;
+							var dynamicsWebView = plus.webview.getWebviewById('barItem/dynamics.html');
+							dynamicsWebView.reload();
+						}
+
+					}
+				});
+			}
+			//隐藏评论
+			function hideCommentBox() {
+				var comment_nav = document.getElementById("comment_nav");
+
+				comment_nav.style.display = "none";
+
+			}
+
+			//收藏操作
+			function collect(dynamic_id) {
+
+				var collect_img = document.getElementById('collect_img');
+				var collect_num = document.getElementById('collect_num');
+				if(collect_img.src.indexOf('uncollect.png') > 0) {
+					var type = 1;
+					collect_img.src = '../../img/collected.png'
+				} else {
+					var type = 0;
+					collect_img.src = '../../img/uncollect.png'
+				}
+				mui.ajax(requestUrls.collect, {
+					data: {
+						dynamic_id: dynamic_id,
+						user_id: JSON.parse(localStorage.getItem('user')).user_id,
+						type: type
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'get', //HTTP请求类型
+					success: function(data) {
+						if(data) {
+							if(type == 0){
+								var myCollectPage = plus.webview.getWebviewById('../mine/colloection.html');
+								mui.fire(myCollectPage,'myCollectFresh',{})
+							}
+							collect_num.innerText = data.data.collect_num;
+
+						}
+
+					}
+				});
+			}
+
+			//评论操作
+			function handleCpmment(parent_id, dynamic_id, user_id, belong_id, type) {
+				window.event.stopPropagation()
+				//type为1：代表第一种；2：代表第二种；3三代表第三种
+				var comment_nav = document.getElementById("comment_nav");
+				var comment_nav_input = document.getElementById("comment_nav_input");
+				comment_nav.style.display = "flex";
+				comment_nav_input.focus();
+				var obj = {};
+				obj.type = type;
+				obj.parent_id = type == 2 ? JSON.parse(localStorage.getItem('user')).user_id : parent_id;
+				obj.comments_details = comment_nav_input.value;
+				obj.dynamic_id = dynamic_id;
+				obj.user_id = type==1?JSON.parse(localStorage.getItem('user')).user_id:user_id;
+				obj.belong_id = belong_id;
+
+				sessionStorage.setItem("commentsMsg", JSON.stringify(obj));
+			}
+
+			//计算发布的时间长度
+			function pastTime(startTime) {
+
+				var isiOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+
+				if(isiOS) { //苹果手机
+
+					startTime = startTime.replace(/\-/g, "/");
+
+				}
+
+				var sTime = new Date(startTime); //开始时间
+				var eTime = new Date(); //结束时间
+				var intervalTime = eTime.getTime() - sTime.getTime(); //间隔毫秒数
+				//作为除数的数字
+				var timeType = 1000;
+				var diffType = intervalTime < 1000 * 60 ? "" : (intervalTime < 1000 * 3600 && intervalTime >= 1000 * 60 ? "分钟前" : (intervalTime < 1000 * 3600 * 24 && intervalTime >= 1000 * 3600 ? "小时前" : (intervalTime >= 1000 * 3600 * 24&&intervalTime<1000 * 3600 * 24*30)?'天前':'月前'));
+				switch(diffType) {
+
+					case "分钟前":
+						timeType = 1000 * 60;
+						break;
+					case "小时前":
+						timeType = 1000 * 3600;
+						break;
+					case "天前":
+						timeType = 1000 * 3600 * 24;
+						break;
+					case "月前":
+						timeType = 1000 * 3600 * 24*30;
+						break;
+					default:
+						return "刚刚"
+						break;
+				}
+				return parseInt(intervalTime / parseInt(timeType)) + diffType;
+
+			}
+		</script>
+	</body>
+
+</html>
